@@ -15,3 +15,20 @@ C:\Users\Chutchai\Documents\Visual Studio 2017\Projects\mp1\mp1\obj\Debug\mp1.pd
 C:\Users\Chutchai\Documents\Visual Studio 2017\Projects\mp1\mp1\obj\Debug\mp1.vbprojResolveAssemblyReference.cache
 C:\Users\Chutchai\Documents\Visual Studio 2017\Projects\mp1\mp1\obj\Debug\mp.ucMain.resources
 C:\Users\Chutchai\Documents\Visual Studio 2017\Projects\mp1\mp1\obj\Debug\mp.frmMain.resources
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp1.vbprojResolveAssemblyReference.cache
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\Interop.MSScriptControl.dll
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp1.vbproj.ResolveComReference.cache
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp.frmMain.resources
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp.Resources.resources
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp.ucMain.resources
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp.ucTest.resources
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp1.vbproj.GenerateResource.Cache
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp1.exe
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp1.xml
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp1.pdb
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\bin\Debug\mp1.exe.config
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\bin\Debug\mp1.exe
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\bin\Debug\mp1.pdb
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\bin\Debug\mp1.xml
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\bin\Debug\Interop.MSScriptControl.dll
+C:\Users\Chutchai\Documents\git\WMP_Client\mp1\obj\Debug\mp.Form1.resources

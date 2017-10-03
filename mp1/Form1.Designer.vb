@@ -32,6 +32,9 @@ Partial Class Form1
         Me.tbScript = New System.Windows.Forms.TextBox()
         Me.txtReturn = New System.Windows.Forms.TextBox()
         Me.UcMain1 = New mp.ucMain()
+        Me.Button5 = New System.Windows.Forms.Button()
+        Me.txtSnippetSlug = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Button1
@@ -72,6 +75,7 @@ Partial Class Form1
         '
         'UcTest1
         '
+        Me.UcTest1.CurrentForm = Nothing
         Me.UcTest1.Location = New System.Drawing.Point(12, 255)
         Me.UcTest1.Name = "UcTest1"
         Me.UcTest1.ParentObjectName = Nothing
@@ -97,16 +101,47 @@ Partial Class Form1
         '
         'UcMain1
         '
+        Me.UcMain1.CurrentForm = Nothing
         Me.UcMain1.Location = New System.Drawing.Point(12, 3)
         Me.UcMain1.Name = "UcMain1"
+        Me.UcMain1.ParentObjectName = Nothing
         Me.UcMain1.Size = New System.Drawing.Size(379, 203)
         Me.UcMain1.TabIndex = 7
+        '
+        'Button5
+        '
+        Me.Button5.Location = New System.Drawing.Point(803, 425)
+        Me.Button5.Name = "Button5"
+        Me.Button5.Size = New System.Drawing.Size(74, 30)
+        Me.Button5.TabIndex = 8
+        Me.Button5.Text = "Get Code"
+        Me.Button5.UseVisualStyleBackColor = True
+        '
+        'txtSnippetSlug
+        '
+        Me.txtSnippetSlug.Location = New System.Drawing.Point(450, 431)
+        Me.txtSnippetSlug.Name = "txtSnippetSlug"
+        Me.txtSnippetSlug.Size = New System.Drawing.Size(347, 20)
+        Me.txtSnippetSlug.TabIndex = 9
+        Me.txtSnippetSlug.Text = "test-snippet"
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(337, 434)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(98, 13)
+        Me.Label1.TabIndex = 10
+        Me.Label1.Text = "Snippet Slug Name"
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(889, 467)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.txtSnippetSlug)
+        Me.Controls.Add(Me.Button5)
         Me.Controls.Add(Me.UcMain1)
         Me.Controls.Add(Me.txtReturn)
         Me.Controls.Add(Me.tbScript)
@@ -130,4 +165,7 @@ Partial Class Form1
     Friend WithEvents tbScript As TextBox
     Friend WithEvents txtReturn As TextBox
     Friend WithEvents UcMain1 As ucMain
+    Friend WithEvents Button5 As Button
+    Friend WithEvents txtSnippetSlug As TextBox
+    Friend WithEvents Label1 As Label
 End Class

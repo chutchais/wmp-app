@@ -1,4 +1,11 @@
-﻿<Runtime.InteropServices.ComVisible(True)>
+﻿Imports System.Net
+Imports System.Web.Script.Serialization
+Imports System.Dynamic
+
+
+
+
+<Runtime.InteropServices.ComVisible(True)>
 Public Class Form1
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
 
@@ -102,5 +109,48 @@ Public Class Form1
         ' MsgBox(CallByName(vvvv, "getLocalObjectValue", Microsoft.VisualBasic.CallType.Get, "textbox2"))
 
     End Sub
+
+
+    'Private Sub GetResponse(uri As Uri, callback As Action(Of Response))
+    '    Dim wc As New WebClient()
+    '    AddHandler wc.OpenReadCompleted,
+    '        Function(o, a)
+    '            If callback IsNot Nothing Then
+    '                Dim ser As New DataContractJsonSerializer(GetType(Response))
+    '                callback(TryCast(ser.ReadObject(a.Result), Response))
+    '            End If
+    '            Return 0
+    '        End Function
+    '    wc.OpenReadAsync(uri)
+    'End Sub
+    Public Shared Function getJsonString(ByVal address As String) As String
+
+        Dim client As WebClient = New WebClient()
+        Dim reply As String = client.DownloadString(address)
+        Return reply
+    End Function
+
+    Public Shared Function getJsonObject(ByVal address As String) As Object
+
+        Dim client As WebClient = New WebClient()
+        Dim json As String = client.DownloadString(address)
+        Dim jss = New JavaScriptSerializer()
+        Dim data = jss.Deserialize(Of Object)(json)
+        Return data
+    End Function
+
+
+
+    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+        Dim json As Object
+        json = getJsonObject("http://127.0.0.1:8000/api/snippet/" + txtSnippetSlug.Text)
+        tbScript.Text = json("code")
+    End Sub
     '--------End Mandatory Funtion for all User Controls-------------
+
+End Class
+
+Public Class MyModel
+    Public Property name() As String
+    Public Property title() As String
 End Class
