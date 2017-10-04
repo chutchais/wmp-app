@@ -144,7 +144,14 @@ Public Class Form1
     Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
         Dim json As Object
         json = getJsonObject("http://127.0.0.1:8000/api/snippet/" + txtSnippetSlug.Text)
-        tbScript.Text = json("code")
+        tbScript.Text = json("items")
+
+        'json = getJsonObject("http://127.0.0.1:8000/api/item/" + txtSnippetSlug.Text)
+        'Dim ccc As String = json("lists")(0)("title")
+        'Dim x As Object
+        'For Each x In json("lists")
+        '    ccc = x("title")
+        'Next
     End Sub
     '--------End Mandatory Funtion for all User Controls-------------
 
