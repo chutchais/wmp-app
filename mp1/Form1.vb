@@ -16,10 +16,10 @@ Public Class Form1
         Dim vCls As New clsMPFlex
         'initial
         vCls.Form = Me
+        vCls.apiUrl = "http://127.0.0.1:8000"
+        '------------
 
         Dim vTestScript As String
-        Dim xx As String
-
         vTestScript = tbScript.Text
         txtReturn.Text = vCls.executeScritp(vTestScript)
 
@@ -135,7 +135,7 @@ Public Class Form1
         Dim client As WebClient = New WebClient()
         Dim json As String = client.DownloadString(address)
         Dim jss = New JavaScriptSerializer()
-        Dim data = jss.Deserialize(Of Object)(json)
+        Dim data As Object = jss.Deserialize(Of Object)(json)
         Return data
     End Function
 
@@ -144,7 +144,7 @@ Public Class Form1
     Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
         Dim json As Object
         json = getJsonObject("http://127.0.0.1:8000/api/snippet/" + txtSnippetSlug.Text)
-        tbScript.Text = json("items")
+        tbScript.Text = json("code")
 
         'json = getJsonObject("http://127.0.0.1:8000/api/item/" + txtSnippetSlug.Text)
         'Dim ccc As String = json("lists")(0)("title")
@@ -157,7 +157,4 @@ Public Class Form1
 
 End Class
 
-Public Class MyModel
-    Public Property name() As String
-    Public Property title() As String
-End Class
+

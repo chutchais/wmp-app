@@ -1,9 +1,21 @@
-﻿<Runtime.InteropServices.ComVisible(True)>
+﻿Imports System.Net
+Imports System.Web.Script.Serialization
+Imports System.Dynamic
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
+
+<Runtime.InteropServices.ComVisible(True)>
 Public Class clsMPFlex
     Dim currentForm As Form
     Public ObjectName As String 'argument of local function
     Public vObjName As String 'For access object name
     Public vReturn As String 'argument for Return
+    Public vSnippetName As String 'argument for Code Library
+
+    'Public vSelfObject As Object
+    Dim vLocalUrl As String
+    Public vJsonObj As Object
+
 
     'Dim vScriptControl As Object
     Public vScriptControl As MSScriptControl.ScriptControlClass
@@ -19,6 +31,18 @@ Public Class clsMPFlex
             currentForm = vForm_
         End Set
     End Property
+
+    Public Property apiUrl As String
+        Get
+            ' Gets the property value.
+            Return vLocalUrl
+        End Get
+        Set(ByVal vUrl_ As String)
+            ' Sets the property value.
+            vLocalUrl = vUrl_
+        End Set
+    End Property
+
     'ReadOnly Property Length() As Integer
     '    Get
     '        Return mstrLine.Length
@@ -31,7 +55,7 @@ Public Class clsMPFlex
     '    userNameValue = UCase(userNameValue)
     'End Sub
     Public Function executeScritp(vScritp As String) As String
-        On Error GoTo HasError
+        ' On Error GoTo HasError
         initialScript()
         vScriptControl.ExecuteStatement(vScritp)
         executeScritp = vScriptControl.Eval("returndata("""")")
@@ -58,6 +82,7 @@ HasError:
         Dim clsFlex As New clsMPFlex
 
         vScriptControl = New MSScriptControl.ScriptControlClass
+        'vSelfObject = Nothing
 
         With vScriptControl
             .Language = "VBScript"
@@ -71,7 +96,9 @@ HasError:
             If Not currentForm Is Nothing Then
                 .AddObject("clsForm", currentForm, True)
             End If
+            .AddObject("wmp_url", vLocalUrl, True)
 
+            '.AddObject("self", vSelfObject, True)
         End With
 
 
@@ -86,6 +113,21 @@ HasError:
 
         vScriptControl.AddCode(vgetObj)
 
+        'Test flex.getJsonObject("""")
+        'Dim vJsonStrObj As String
+        'vJsonStrObj = "Function json(vUrl_,jsonName) " & vbCrLf &
+        '        "flex.vUrl =  vUrl_ " & vbCrLf &
+        '        "flex.Form = clsForm " & vbCrLf &
+        '        "clsMain.AddObject jsonName,flex.getJsonObject("""") " & vbCrLf &
+        '        "End Function"
+        'vScriptControl.AddCode(vJsonStrObj)
+        Dim vJsonStrObj As String
+        vJsonStrObj = "Function json(vUrl_) " & vbCrLf &
+                " dim outputx " & vbCrLf &
+                " outputx = getJsonString(vUrl_) " & vbCrLf &
+                " json = parseJson(outputx) " & vbCrLf &
+                "End Function"
+        vScriptControl.AddCode(vJsonStrObj)
 
         'Return
         Dim vReturn_ As String
@@ -102,7 +144,16 @@ HasError:
                 "End Function"
         vScriptControl.AddCode(vReturn_)
 
+        'New function to include library (vFlexLibName)
+        Dim vInclude As String
+        vInclude = "Function includeSnippet(vSnippet)" & vbCrLf &
+                "flex.vSnippetName = vSnippet " & vbCrLf &
+                "flex.apiUrl = wmp_url " & vbCrLf &
+                "vCode = getSnippetCode(vSnippet)" & vbCrLf &
+                "clsMain.AddCode vCode  " & vbCrLf &
+                "End Function"
 
+        vScriptControl.AddCode(vInclude)
 
 
 
@@ -141,13 +192,7 @@ HasError:
         '            "End Function"
         '    If vXmlResult <> "" Then vScriptControl.AddCode vXml
 
-        ''New function to include library (vFlexLibName)
-        '    vInclude = "Function includeLib(vLibrary)" & vbCrLf &
-        '            "clsODCSEscript.vFlexLibName = vLibrary " & vbCrLf &
-        '            "clsMain.AddCode clsODCSEscript.getLibrary("""",dbCon) " & vbCrLf &
-        '            "End Function"
 
-        '    vScriptControl.AddCode vInclude
 
         'New function to get local object
         'vgetObj = "Function localObject(vObjectName,vNewName)" & vbCrLf &
@@ -377,6 +422,57 @@ HasError:
 
     End Function
 
+    Public Function getJsonString(ByVal address As String) As String
+
+        Dim client As WebClient = New WebClient()
+        Dim reply As String = client.DownloadString(address)
+        getJsonString = reply
+    End Function
+
+    Public Function getJsonObject(ByVal address As String) As Object
+
+        Dim client As WebClient = New WebClient()
+        Dim json As String = client.DownloadString(address)
+
+        'Dim x As Object = JsonConvert.DeserializeObject(Of Object)(json)
+        'Dim d As Object
+        'd = JObject.Parse(json)
+        'Dim ccc As String = d("name")
+
+        Dim jss = New JavaScriptSerializer()
+        'Dim data As Object = jss.Deserialize(Of JObject)(json)
+        Dim data As Object = jss.DeserializeObject(json)
+        'vJsonObj = data
+        Return data
+    End Function
+
+    Public Function getSnippetCode(ByVal _vSnippetName As String) As String
+
+        Dim client As WebClient = New WebClient()
+        Dim json As String = client.DownloadString(vLocalUrl + "/api/snippet/" + _vSnippetName)
+        Dim jss = New JavaScriptSerializer()
+        Dim data As Object = jss.Deserialize(Of Object)(json)
+        Return data("code")
+    End Function
+
+
+    Public Function parseJson(_jsonStr) As Object
+        Dim result As Object
+        Dim scriptControl As Object
+        scriptControl = CreateObject("MSScriptControl.ScriptControl")
+        scriptControl.Language = "JScript"
+        result = scriptControl.Eval("(" + _jsonStr + ")")
+        parseJson = result
+    End Function
+    'Public Function getJsonObject(ByVal address As String) As Object
+
+    '    Dim client As WebClient = New WebClient()
+    '    Dim json As String = client.DownloadString(vUrl)
+    '    Dim jss = New JavaScriptSerializer()
+    '    Dim data As Object = jss.Deserialize(Of Object)(json)
+    '    vJsonObj = data
+    '    Return vJsonObj
+    'End Function
 
 
 End Class
