@@ -14,6 +14,11 @@ Public Class clsMPFlex
 
     'Public vSelfObject As Object
     Dim vLocalUrl As String
+    Dim vLocalSuccess As Boolean
+    Dim vLocalErrorMsg As String
+    Dim vLocalMsg As String
+
+
     Public vJsonObj As Object
 
 
@@ -32,7 +37,7 @@ Public Class clsMPFlex
         End Set
     End Property
 
-    Public Property apiUrl As String
+    Public Property Url As String
         Get
             ' Gets the property value.
             Return vLocalUrl
@@ -40,6 +45,39 @@ Public Class clsMPFlex
         Set(ByVal vUrl_ As String)
             ' Sets the property value.
             vLocalUrl = vUrl_
+        End Set
+    End Property
+
+    Public Property success As Boolean
+        Get
+            ' Gets the property value.
+            Return vLocalSuccess
+        End Get
+        Set(ByVal vSuccess_ As Boolean)
+            ' Sets the property value.
+            vLocalSuccess = vSuccess_
+        End Set
+    End Property
+
+    Public Property error_message As String
+        Get
+            ' Gets the property value.
+            Return vLocalErrorMsg
+        End Get
+        Set(ByVal vErrorMsg_ As String)
+            ' Sets the property value.
+            vLocalErrorMsg = vErrorMsg_
+        End Set
+    End Property
+
+    Public Property message As String
+        Get
+            ' Gets the property value.
+            Return vLocalMsg
+        End Get
+        Set(ByVal vMsg_ As String)
+            ' Sets the property value.
+            vLocalMsg = vMsg_
         End Set
     End Property
 
@@ -55,14 +93,20 @@ Public Class clsMPFlex
     '    userNameValue = UCase(userNameValue)
     'End Sub
     Public Function executeScritp(vScritp As String) As String
-        ' On Error GoTo HasError
+        On Error GoTo HasError
+        Dim message_out As String
         initialScript()
         vScriptControl.ExecuteStatement(vScritp)
         executeScritp = vScriptControl.Eval("returndata("""")")
+        message_out = vScriptControl.Eval("returnMessage("""")")
         vScriptControl.Reset()
+        vLocalMsg = message_out
+        vLocalSuccess = True
         Exit Function
 HasError:
         destroyObject()
+        vLocalSuccess = False
+        vLocalErrorMsg = Err.Description
     End Function
 
     Private Sub destroyObject()
@@ -74,6 +118,12 @@ HasError:
         returnData = vReturn
     End Function
 
+    Public Function returnMessage(vOutput As String) As String
+        'getValueByParameter
+        returnMessage = vLocalMsg
+
+    End Function
+
 
     Private Sub initialScript()
 
@@ -83,6 +133,7 @@ HasError:
 
         vScriptControl = New MSScriptControl.ScriptControlClass
         'vSelfObject = Nothing
+        vLocalMsg = ""
 
         With vScriptControl
             .Language = "VBScript"
@@ -98,9 +149,13 @@ HasError:
             End If
             .AddObject("wmp_url", vLocalUrl, True)
 
-            '.AddObject("self", vSelfObject, True)
+            .AddObject("message", vLocalMsg, True)
         End With
 
+        'Initial GLOBAL Variable
+        Dim vGlobal As String
+        vGlobal = "GLOBAL_URL = """ & vLocalUrl & """"
+        vScriptControl.AddCode(vGlobal)
 
         'New function to get local object
 
@@ -137,6 +192,13 @@ HasError:
                 "End Function"
         vScriptControl.AddCode(vReturn_)
 
+        Dim vReturnMsg_ As String
+        vReturnMsg_ = "Function return_message(vReturn_) " & vbCrLf &
+                " dim output_" & vbCrLf &
+                "    flex.message = vReturn_ " & vbCrLf &
+                "End Function"
+        vScriptControl.AddCode(vReturnMsg_)
+
         vReturn_ = "Function returndata(vReturn_) " & vbCrLf &
                 " dim output_" & vbCrLf &
                 "    output_ = flex.returnData("""") " & vbCrLf &
@@ -148,7 +210,7 @@ HasError:
         Dim vInclude As String
         vInclude = "Function includeSnippet(vSnippet)" & vbCrLf &
                 "flex.vSnippetName = vSnippet " & vbCrLf &
-                "flex.apiUrl = wmp_url " & vbCrLf &
+                "flex.Url = wmp_url " & vbCrLf &
                 "vCode = getSnippetCode(vSnippet)" & vbCrLf &
                 "clsMain.AddCode vCode  " & vbCrLf &
                 "End Function"

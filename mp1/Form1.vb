@@ -16,13 +16,19 @@ Public Class Form1
         Dim vCls As New clsMPFlex
         'initial
         vCls.Form = Me
-        vCls.apiUrl = "http://127.0.0.1:8000"
+        vCls.Url = "http://127.0.0.1:8000"
+        'vCls.message = "Test message"
         '------------
 
         Dim vTestScript As String
         vTestScript = tbScript.Text
         txtReturn.Text = vCls.executeScritp(vTestScript)
-
+        'MsgBox(vCls.Url)
+        lblSuccess.Text = vCls.success
+        lblMsg.Text = vCls.message
+        If Not vCls.success Then
+            MsgBox(vCls.error_message)
+        End If
 
 
     End Sub

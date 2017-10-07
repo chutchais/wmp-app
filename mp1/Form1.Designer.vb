@@ -35,6 +35,8 @@ Partial Class Form1
         Me.Button5 = New System.Windows.Forms.Button()
         Me.txtSnippetSlug = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.lblMsg = New System.Windows.Forms.Label()
+        Me.lblSuccess = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Button1
@@ -134,11 +136,31 @@ Partial Class Form1
         Me.Label1.TabIndex = 10
         Me.Label1.Text = "Snippet Slug Name"
         '
+        'lblMsg
+        '
+        Me.lblMsg.AutoSize = True
+        Me.lblMsg.Location = New System.Drawing.Point(396, 279)
+        Me.lblMsg.Name = "lblMsg"
+        Me.lblMsg.Size = New System.Drawing.Size(85, 13)
+        Me.lblMsg.TabIndex = 11
+        Me.lblMsg.Text = "Return Message"
+        '
+        'lblSuccess
+        '
+        Me.lblSuccess.AutoSize = True
+        Me.lblSuccess.Location = New System.Drawing.Point(396, 257)
+        Me.lblSuccess.Name = "lblSuccess"
+        Me.lblSuccess.Size = New System.Drawing.Size(48, 13)
+        Me.lblSuccess.TabIndex = 12
+        Me.lblSuccess.Text = "Success"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(889, 467)
+        Me.Controls.Add(Me.lblSuccess)
+        Me.Controls.Add(Me.lblMsg)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtSnippetSlug)
         Me.Controls.Add(Me.Button5)
@@ -168,4 +190,6 @@ Partial Class Form1
     Friend WithEvents Button5 As Button
     Friend WithEvents txtSnippetSlug As TextBox
     Friend WithEvents Label1 As Label
+    Friend WithEvents lblMsg As Label
+    Friend WithEvents lblSuccess As Label
 End Class
