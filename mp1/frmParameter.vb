@@ -42,7 +42,7 @@ Public Class frmParameter
 
         Dim Z As New ucParaText()
         With Z
-            .Name = "Param2"
+            .Name = "Param3"
             .title = "Param Name"
             .message = "Testing Mesasge"
             .value = "ABC"
@@ -91,6 +91,10 @@ Public Class frmParameter
     End Sub
 
     Private Sub TextBox1_KeyPress(sender As Object, e As KeyPressEventArgs) Handles TextBox1.KeyPress
+
+    End Sub
+
+    Private Sub TextBox1_GotFocus(sender As Object, e As EventArgs) Handles TextBox1.GotFocus
 
     End Sub
 

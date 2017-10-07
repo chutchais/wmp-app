@@ -127,6 +127,9 @@ Public Class ucParaText
         AddHandler text.TextChanged, AddressOf text_Changed
         AddHandler text.Validating, AddressOf text_Validating
         AddHandler text.KeyPress, AddressOf text_KeyPress
+        AddHandler text.GotFocus, AddressOf text_GotFocus
+
+
 
         Me.Controls.Add(label)
         Me.Controls.Add(text)
@@ -158,6 +161,10 @@ Public Class ucParaText
 
     End Sub
 
+    Friend Sub text_GotFocus(sender As Object, e As EventArgs)
+        Dim txt = DirectCast(sender, TextBox)
+        txt.Select(0, txt.Text.Length)
+    End Sub
     Friend Sub text_Changed(sender As Object, e As EventArgs)
         'Write code here.
     End Sub
