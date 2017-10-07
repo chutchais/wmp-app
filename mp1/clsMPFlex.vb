@@ -93,7 +93,7 @@ Public Class clsMPFlex
     '    userNameValue = UCase(userNameValue)
     'End Sub
     Public Function executeScritp(vScritp As String) As String
-        On Error GoTo HasError
+        'On Error GoTo HasError
         Dim message_out As String
         initialScript()
         vScriptControl.ExecuteStatement(vScritp)
