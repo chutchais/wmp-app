@@ -5,7 +5,7 @@ Imports System.Web.Script.Serialization
 Imports System.Dynamic
 
 <Runtime.InteropServices.ComVisible(True)>
-Public Class ucParamList
+Public Class ucParamRadio
     'Start Property
     Private vTitleValue As String
     Private vCode As String
@@ -69,16 +69,37 @@ Public Class ucParamList
         End Set
     End Property
 
+    Private vSelectedItem As String
+    Public Property selectedItem() As String
+        Get
+            Return vSelectedItem
+        End Get
+        Set(ByVal value As String)
+            vSelectedItem = value
+        End Set
+    End Property
+
+    Private vSelectedValue As String
+    Public Property selectedValue() As String
+        Get
+            Return vSelectedValue
+        End Get
+        Set(ByVal value As String)
+            vSelectedValue = value
+        End Set
+    End Property
+
     Private Sub ucParamList_Load(sender As Object, e As EventArgs) Handles Me.Load
         Me.AutoSize = True
         Dim label As New Label
         Dim text As New TextBox
-        Dim clist As New ComboBox
+        Dim cradio As New RadioButton
         Dim labelMsg As New Label
 
         With label
             .Name = "caption"
             .Text = vTitleValue
+            .AutoSize = True
             '.Anchor = AnchorStyles.Left + AnchorStyles.Top
             .Dock = DockStyle.Left
         End With
@@ -88,8 +109,8 @@ Public Class ucParamList
         '    .Dock = DockStyle.Fill
         'End With
 
-        With clist
-            .Name = "list"
+        With cradio
+            .Name = "radio"
             '.Text = vDefaultValue
             .Size = New Size(200, 30)
             .Anchor = AnchorStyles.Left
@@ -97,7 +118,7 @@ Public Class ucParamList
             .Margin = New Padding(5)
 
         End With
-        AddHandler clist.SelectionChangeCommitted, AddressOf clist_SelectionChangeCommitted
+        'AddHandler clist.SelectionChangeCommitted, AddressOf clist_SelectionChangeCommitted
         'AddHandler text.Validating, AddressOf text_Validating
         'AddHandler text.KeyPress, AddressOf text_KeyPress
         'AddHandler text.GotFocus, AddressOf text_GotFocus
@@ -105,16 +126,17 @@ Public Class ucParamList
 
 
         Me.Controls.Add(label)
-        Me.Controls.Add(clist)
+        'Me.Controls.Add(cradio)
 
         'Get List------
         Dim vR As String
-        vR = getItem(vSlug, clist)
+        vR = getItem(vSlug, cradio)
         '--------------
     End Sub
 
     Friend Sub clist_SelectionChangeCommitted(sender As Object, e As EventArgs)
         Dim clist = DirectCast(sender, ComboBox)
+        vSelectedItem = clist.Text
         executeScript()
 
 
@@ -157,14 +179,12 @@ Public Class ucParamList
 
         Dim vReturn As String
         vCode = getCode(vSlug)
-        vReturn = vCls.executeScritp(vCode)
-        'MsgBox(vCls.Url)
-        'lblSuccess.Text = vCls.success
-        'lblMsg.Text = vCls.message
-        If Not vCls.success Then
-            MsgBox(vCls.error_message)
+        If vCode <> "" Then
+            vReturn = vCls.executeScritp(vCode)
+            If Not vCls.success Then
+                MsgBox(vCls.error_message)
+            End If
         End If
-
         Return False
     End Function
 
@@ -174,7 +194,7 @@ Public Class ucParamList
         getCode = getSnippetBySlug(iObject("snippet"))("code")
     End Function
 
-    Private Function getItem(vSlug_ As String, ucList As ComboBox) As String
+    Private Function getItem(vSlug_ As String, ucRadio As RadioButton) As String
         Dim iObject As Object
         Dim iListObj As Object
         Dim vName As String
@@ -188,32 +208,59 @@ Public Class ucParamList
         iListObj = iObject("lists")
         Dim comboSource As New Dictionary(Of String, String)()
         Dim vDefaultValue As String = ""
+        Dim vPosBottom As Integer = 0
+        Dim vRadioIndex As Integer = 0
+        Dim vXFirstCol As Integer = 160
+        Dim vXSecondCol As Integer = 250
+        Dim ca As Boolean
+        Dim x, y As Integer
+        Dim radBtn As New RadioButton
         For Each aa In iListObj
             vName = aa("name")
             vTile = aa("title")
             vValue = aa("value")
             vDefault = aa("default")
-            If vDefault Then
-                vDefaultValue = vValue
-            End If
+
             vOrdered = aa("ordered")
             vStatus = aa("status")
             If vStatus = "A" Then
-                comboSource.Add(vName & ":" & vTile, vValue)
+                ca = vRadioIndex Mod 2
+                If ca = 0 Then
+                    x = vXFirstCol
+                    y = vPosBottom
+                Else
+                    x = vXSecondCol
+                    y = vPosBottom
+                End If
+                radBtn = New RadioButton With {
+                                .Text = vTile,
+                                .Name = "radio" + vRadioIndex.ToString,
+                                .Location = New Point(x, y),
+                                .Tag = vRadioIndex,
+                                .AutoSize = True,
+                                .Checked = vDefault
+                                }
+                Me.Controls.Add(radBtn)
+                AddHandler radBtn.Click, AddressOf radio_Click ' add an event
+                If ca Then
+                    vPosBottom = vPosBottom + 20
+                End If
+
+                vRadioIndex = vRadioIndex + 1
             End If
 
         Next
-        With ucList
-            .DropDownStyle = ComboBoxStyle.DropDownList
-            .DataSource = New BindingSource(comboSource, Nothing)
-            .DisplayMember = "Key"
-            .ValueMember = "Value"
-            .SelectedValue = vDefaultValue
-        End With
 
         Return "s"
-        'getCode = getSnippetBySlug(iObject("snippet"))("code")
+
     End Function
+
+    Private Sub radio_Click(sender As Object, e As EventArgs)
+        Dim radBtn = DirectCast(sender, RadioButton)
+        vSelectedItem = radBtn.Text
+        vSelectedValue = radBtn.Text
+        executeScript()
+    End Sub
 
     '--------Mandatory Funtion for all User Controls-------------
     '--------DO NOT change---------------------------------------

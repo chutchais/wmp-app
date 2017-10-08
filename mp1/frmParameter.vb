@@ -80,29 +80,50 @@ Public Class frmParameter
         L.showOpject()
 
 
+        Dim R As New ucParamRadio()
+        With R
+            .Name = "Param5"
+            .title = "Fiber Type"
+            .message = "Testing Mesasge"
+            .value = "ABC"
+            .regExpress = "[0-9]{3}"
+            .slug = "choice1-none"
+            .url = "http://127.0.0.1:8000"
+            .CurrentForm = Me
+            .Location = New Point(50, vPosBottom)
+            vPosBottom = .Location.Y + .Height + 5
+            .Left = X.Left
+            .Width = L.Width
+            '.Dock = DockStyle.Bottom
+        End With
+        Me.Controls.Add(R)
+        R.Show()
+        R.showOpject()
+
+
 
     End Sub
 
-    Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) Handles TextBox1.TextChanged
+    Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) 
 
     End Sub
 
-    Private Sub TextBox1_Validated(sender As Object, e As EventArgs) Handles TextBox1.Validated
+    Private Sub TextBox1_Validated(sender As Object, e As EventArgs) 
 
     End Sub
 
-    Private Sub TextBox1_Validating(sender As Object, e As CancelEventArgs) Handles TextBox1.Validating
+    Private Sub TextBox1_Validating(sender As Object, e As CancelEventArgs) 
         'If Not IsValid(TextBox1.Text) Then
         '    e.Cancel = True
         '    TextBox1.Select(0, TextBox1.Text.Length)
         'End If
     End Sub
 
-    Private Sub TextBox1_KeyPress(sender As Object, e As KeyPressEventArgs) Handles TextBox1.KeyPress
+    Private Sub TextBox1_KeyPress(sender As Object, e As KeyPressEventArgs) 
 
     End Sub
 
-    Private Sub TextBox1_GotFocus(sender As Object, e As EventArgs) Handles TextBox1.GotFocus
+    Private Sub TextBox1_GotFocus(sender As Object, e As EventArgs) 
 
     End Sub
 
@@ -114,11 +135,19 @@ Public Class frmParameter
         'Return myMatch.Success
     End Function
 
-    Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
+    Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) 
 
     End Sub
 
-    Private Sub ComboBox1_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboBox1.SelectionChangeCommitted
+    Private Sub ComboBox1_SelectionChangeCommitted(sender As Object, e As EventArgs) 
+
+    End Sub
+
+    Private Sub RadioButton1_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton1.CheckedChanged
+
+    End Sub
+
+    Private Sub RadioButton1_Click(sender As Object, e As EventArgs) Handles RadioButton1.Click
 
     End Sub
 

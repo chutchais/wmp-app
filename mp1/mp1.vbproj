@@ -121,6 +121,12 @@
     <Compile Include="ucParamList.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ucParamRadio.Designer.vb">
+      <DependentUpon>ucParamRadio.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ucParamRadio.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ucParaText.Designer.vb">
       <DependentUpon>ucParaText.vb</DependentUpon>
     </Compile>
@@ -152,6 +158,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ucParamList.resx">
       <DependentUpon>ucParamList.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucParamRadio.resx">
+      <DependentUpon>ucParamRadio.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucParaText.resx">
       <DependentUpon>ucParaText.vb</DependentUpon>

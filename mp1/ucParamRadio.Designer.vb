@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class ucParamList
+Partial Class ucParamRadio
     Inherits System.Windows.Forms.UserControl
 
     'UserControl overrides dispose to clean up the component list.
@@ -24,11 +24,12 @@ Partial Class ucParamList
     Private Sub InitializeComponent()
         Me.SuspendLayout()
         '
-        'ucParamList
+        'ucParamRadio
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.Name = "ucParamList"
+        Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
+        Me.Name = "ucParamRadio"
         Me.Size = New System.Drawing.Size(363, 26)
         Me.ResumeLayout(False)
 
