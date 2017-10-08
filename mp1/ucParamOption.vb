@@ -5,7 +5,7 @@ Imports System.Web.Script.Serialization
 Imports System.Dynamic
 
 <Runtime.InteropServices.ComVisible(True)>
-Public Class ucParamRadio
+Public Class ucParamOption
     'Start Property
     Private vTitleValue As String
     Private vCode As String
@@ -79,13 +79,24 @@ Public Class ucParamRadio
         End Set
     End Property
 
-    Private vSelectedValue As String
-    Public Property selectedValue() As String
+    Private vSelectedValue As Boolean
+    Public Property selectedValue() As Boolean
         Get
             Return vSelectedValue
         End Get
-        Set(ByVal value As String)
+        Set(ByVal value As Boolean)
             vSelectedValue = value
+        End Set
+    End Property
+
+    Private vSelectedList As String
+    Public Property selectedList() As String
+        Get
+            getOptionChecked()
+            Return vSelectedList
+        End Get
+        Set(ByVal value As String)
+            vSelectedList = value
         End Set
     End Property
 
@@ -103,30 +114,8 @@ Public Class ucParamRadio
             '.Anchor = AnchorStyles.Left + AnchorStyles.Top
             .Dock = DockStyle.Left
         End With
-        'With labelMsg
-        '    .Name = "lblMsg"
-        '    .Text = vMessage
-        '    .Dock = DockStyle.Fill
-        'End With
-
-        With cradio
-            .Name = "radio"
-            '.Text = vDefaultValue
-            .Size = New Size(200, 30)
-            .Anchor = AnchorStyles.Left
-            .Dock = DockStyle.Right
-            .Margin = New Padding(5)
-
-        End With
-        'AddHandler clist.SelectionChangeCommitted, AddressOf clist_SelectionChangeCommitted
-        'AddHandler text.Validating, AddressOf text_Validating
-        'AddHandler text.KeyPress, AddressOf text_KeyPress
-        'AddHandler text.GotFocus, AddressOf text_GotFocus
-
-
-
         Me.Controls.Add(label)
-        'Me.Controls.Add(cradio)
+
 
         'Get List------
         Dim vR As String
@@ -191,7 +180,12 @@ Public Class ucParamRadio
     Private Function getCode(vSlug_ As String) As String
         Dim iObject As Object
         iObject = getItemBySlug(vSlug_)
-        getCode = getSnippetBySlug(iObject("snippet"))("code")
+        If Not IsDBNull(iObject("snippet")) Then
+            getCode = getSnippetBySlug(iObject("snippet"))("code")
+        Else
+            getCode = ""
+        End If
+
     End Function
 
     Private Function getItem(vSlug_ As String, ucRadio As RadioButton) As String
@@ -214,7 +208,7 @@ Public Class ucParamRadio
         Dim vXSecondCol As Integer = 250
         Dim ca As Boolean
         Dim x, y As Integer
-        Dim radBtn As New RadioButton
+        Dim radBtn As New CheckBox
         For Each aa In iListObj
             vName = aa("name")
             vTile = aa("title")
@@ -232,17 +226,16 @@ Public Class ucParamRadio
                     x = vXSecondCol
                     y = vPosBottom
                 End If
-                radBtn = New RadioButton With {
+                radBtn = New CheckBox With {
                                 .Text = vTile,
-                                .Name = "radio" + vRadioIndex.ToString,
+                                .Name = "option" + vRadioIndex.ToString,
                                 .Location = New Point(x, y),
                                 .Tag = vRadioIndex,
                                 .AutoSize = True,
                                 .Checked = vDefault
                                 }
                 Me.Controls.Add(radBtn)
-
-                AddHandler radBtn.Click, AddressOf radio_Click ' add an event
+                AddHandler radBtn.Click, AddressOf option_Click ' add an event
                 If ca Then
                     vPosBottom = vPosBottom + 20
                 End If
@@ -256,10 +249,26 @@ Public Class ucParamRadio
 
     End Function
 
-    Private Sub radio_Click(sender As Object, e As EventArgs)
-        Dim radBtn = DirectCast(sender, RadioButton)
-        vSelectedItem = radBtn.Text
-        vSelectedValue = radBtn.Text
+    Sub getOptionChecked()
+        vSelectedList = ""
+        For Each c In Me.Controls
+            If TypeOf c Is CheckBox Then
+                If c.checked Then
+                    vSelectedList = vSelectedList & c.text & ","
+                End If
+            End If
+        Next
+        'Remove comma(,) at last
+        If vSelectedList <> "" Then
+            vSelectedList = Mid(vSelectedList, 1, Len(vSelectedList) - 1)
+        End If
+    End Sub
+    Private Sub option_Click(sender As Object, e As EventArgs)
+        Dim optBtn = DirectCast(sender, CheckBox)
+        vSelectedItem = optBtn.Text
+        vSelectedValue = optBtn.Checked
+        getOptionChecked()
+
         executeScript()
     End Sub
 

@@ -91,14 +91,37 @@ Public Class frmParameter
             .url = "http://127.0.0.1:8000"
             .CurrentForm = Me
             .Location = New Point(50, vPosBottom)
+            'vPosBottom = .Location.Y + .Height + 5
+            .Left = X.Left
+            .Width = L.Width
+            '.AutoSize = True
+            '.Dock = DockStyle.Bottom
+        End With
+        Me.Controls.Add(R)
+        R.Show()
+        vPosBottom = R.Location.Y + R.Height + 5
+        R.showOpject()
+
+
+        Dim O As New ucParamOption()
+        With O
+            .Name = "Param6"
+            .title = "Fiber Type"
+            .message = "Testing Mesasge"
+            .value = "ABC"
+            .regExpress = "[0-9]{3}"
+            .slug = "choice1-none"
+            .url = "http://127.0.0.1:8000"
+            .CurrentForm = Me
+            .Location = New Point(50, vPosBottom)
             vPosBottom = .Location.Y + .Height + 5
             .Left = X.Left
             .Width = L.Width
             '.Dock = DockStyle.Bottom
         End With
-        Me.Controls.Add(R)
-        R.Show()
-        R.showOpject()
+        Me.Controls.Add(O)
+        O.Show()
+        O.showOpject()
 
 
 
@@ -143,11 +166,11 @@ Public Class frmParameter
 
     End Sub
 
-    Private Sub RadioButton1_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton1.CheckedChanged
+    Private Sub RadioButton1_CheckedChanged(sender As Object, e As EventArgs) 
 
     End Sub
 
-    Private Sub RadioButton1_Click(sender As Object, e As EventArgs) Handles RadioButton1.Click
+    Private Sub RadioButton1_Click(sender As Object, e As EventArgs) 
 
     End Sub
 
