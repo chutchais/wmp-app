@@ -115,6 +115,12 @@
     <Compile Include="ucMain.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ucParamList.Designer.vb">
+      <DependentUpon>ucParamList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ucParamList.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ucParaText.Designer.vb">
       <DependentUpon>ucParaText.vb</DependentUpon>
     </Compile>
@@ -143,6 +149,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ucMain.resx">
       <DependentUpon>ucMain.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucParamList.resx">
+      <DependentUpon>ucParamList.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucParaText.resx">
       <DependentUpon>ucParaText.vb</DependentUpon>

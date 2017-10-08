@@ -216,6 +216,7 @@ Public Class ucParaText
         vCls.Url = "http://127.0.0.1:8000"
 
         Dim vReturn As String
+        vCode = getCode(vSlug)
         vReturn = vCls.executeScritp(vCode)
         'MsgBox(vCls.Url)
         'lblSuccess.Text = vCls.success
@@ -225,6 +226,12 @@ Public Class ucParaText
         End If
 
         Return False
+    End Function
+
+    Private Function getCode(vSlug_ As String) As String
+        Dim iObject As Object
+        iObject = getItemBySlug(vSlug_)
+        getCode = getSnippetBySlug(iObject("snippet"))("code")
     End Function
 
 
@@ -361,9 +368,7 @@ HasError:
 
     Public Sub showOpject()
         showObjectName()
-        Dim iObject As Object
-        iObject = getItemBySlug(vSlug)
-        vCode = getSnippetBySlug(iObject("snippet"))("code")
+
     End Sub
 
     '--------End Mandatory Funtion for all User Controls-------------
