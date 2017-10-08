@@ -4,6 +4,7 @@ Imports System.Text.RegularExpressions
 <Runtime.InteropServices.ComVisible(True)>
 Public Class frmParameter
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
         Dim vPosBottom As Integer
         Dim X As New ucParaText()
         With X
@@ -58,20 +59,27 @@ Public Class frmParameter
         Z.Show()
         Z.showOpject()
 
-        'For i = 1 To 2
+        Dim L As New ucParamList()
+        With L
+            .Name = "Param4"
+            .title = "Fiber Type"
+            .message = "Testing Mesasge"
+            .value = "ABC"
+            .regExpress = "[0-9]{3}"
+            .slug = "choice1-none"
+            .url = "http://127.0.0.1:8000"
+            .CurrentForm = Me
+            .Location = New Point(50, vPosBottom)
+            vPosBottom = .Location.Y + .Height + 5
+            .Left = X.Left
+            .Width = L.Width
+            '.Dock = DockStyle.Bottom
+        End With
+        Me.Controls.Add(L)
+        L.Show()
+        L.showOpject()
 
-        '    Dim txt As New TextBox
-        '    With txt
-        '        .Text = "name" & i.ToString()
-        '        .Location = New Point(50, (i * 100) + 10)
-        '        .BackColor = Color.Red
-        '        .Size = New Size(50, 20)
-        '    End With
-        '    Me.Controls.Add(txt)
-        '    txt.Show()
 
-
-        'Next
 
     End Sub
 
@@ -105,6 +113,16 @@ Public Class frmParameter
         'myMatch = myRegEx.Match(value)
         'Return myMatch.Success
     End Function
+
+    Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
+
+    End Sub
+
+    Private Sub ComboBox1_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboBox1.SelectionChangeCommitted
+
+    End Sub
+
+
 
     'Private Function IsValid(ByVal Contents As String) As Boolean
     '    Dim myRegEx As New Regex("*", RegexOptions.IgnoreCase)

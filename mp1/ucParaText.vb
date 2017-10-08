@@ -6,6 +6,7 @@ Imports System.Dynamic
 
 <Runtime.InteropServices.ComVisible(True)>
 Public Class ucParaText
+    'Start Property
     Private vTitleValue As String
     Private vCode As String
 
@@ -17,8 +18,6 @@ Public Class ucParaText
             vTitleValue = value
         End Set
     End Property
-
-
 
     Private vMessage As String
     Public Property message() As String
@@ -70,41 +69,19 @@ Public Class ucParaText
         End Set
     End Property
 
-    'Private currentForm As Object
-    'Public Property Form() As Object
-    '    Get
-    '        ' Gets the property value.
-    '        Return currentForm
-    '    End Get
-    '    Set(ByVal vForm_ As Object)
-    '        ' Sets the property value.
-    '        currentForm = vForm_
-    '    End Set
     'End Property
-
 
     Private Sub ucParaText_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        'Me.AutoSizeMode = AutoSizeMode.GrowAndShrink '     Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.AutoSize = True
-        'Dim TableLayout = New TableLayoutPanel
-        'With TableLayout
-        '    .Name = "tableLayout"
-        '    .Margin = New System.Windows.Forms.Padding(0, 0, 0, 0)
-        '    .ColumnCount = 2
-        '    .RowCount = 3
-        '    .Dock = DockStyle.Fill
-        '    .AutoSizeMode = AutoSizeMode.GrowAndShrink ' Windows.Forms.AutoSizeMode.GrowAndShrink
-        '    .AutoSize = True
-        'End With
-        'Me.Controls.Add(TableLayout)
+
 
         Dim label As New Label
         Dim text As New TextBox
         Dim labelMsg As New Label
 
         With label
-            .Name = "lblCaption"
+            .Name = "caption"
             .Text = vTitleValue
             '.Anchor = AnchorStyles.Left + AnchorStyles.Top
             .Dock = DockStyle.Left
