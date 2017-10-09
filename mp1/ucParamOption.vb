@@ -101,7 +101,7 @@ Public Class ucParamOption
     End Property
 
     Private Sub ucParamList_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Me.AutoSize = True
+        ' Me.AutoSize = True
         Dim label As New Label
         Dim text As New TextBox
         Dim cradio As New RadioButton
@@ -121,6 +121,7 @@ Public Class ucParamOption
         Dim vR As String
         vR = getItem(vSlug, cradio)
         '--------------
+        Me.AutoSize = True
     End Sub
 
     Friend Sub clist_SelectionChangeCommitted(sender As Object, e As EventArgs)

@@ -207,8 +207,15 @@ Public Class ucParaText
 
     Private Function getCode(vSlug_ As String) As String
         Dim iObject As Object
+        Dim snippet As Object
         iObject = getItemBySlug(vSlug_)
-        getCode = getSnippetBySlug(iObject("snippet"))("code")
+        snippet = iObject("snippet")
+        If Not snippet Is Nothing Then
+            getCode = getSnippetBySlug(iObject("snippet"))("code")
+        Else
+            getCode = ""
+        End If
+
     End Function
 
 

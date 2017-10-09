@@ -4,9 +4,19 @@ Imports System.Net
 Imports System.Web.Script.Serialization
 Imports System.Dynamic
 
+
+
+Public Class BaseControl
+    Protected Overridable Sub OnLoad(ByVal e As EventArgs)
+        'MessageBox.Show("BaseControl Click")
+        'base.OnLoad(e)
+    End Sub
+End Class
+
 <Runtime.InteropServices.ComVisible(True)>
 Public Class ucParamRadio
     'Start Property
+    Private vFinalHeight As Integer
     Private vTitleValue As String
     Private vCode As String
 
@@ -89,8 +99,23 @@ Public Class ucParamRadio
         End Set
     End Property
 
+    Private vNewHeight As String
+    Public Property Height_New() As String
+        Get
+            Return vFinalHeight
+        End Get
+        Set(ByVal value As String)
+            vNewHeight = value
+        End Set
+    End Property
+
+    Protected Overridable Sub OnLoad(e As EventArgs)
+
+    End Sub
+
     Private Sub ucParamList_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Me.AutoSize = True
+
+
         Dim label As New Label
         Dim text As New TextBox
         Dim cradio As New RadioButton
@@ -111,8 +136,8 @@ Public Class ucParamRadio
 
         With cradio
             .Name = "radio"
-            '.Text = vDefaultValue
-            .Size = New Size(200, 30)
+
+            '.Size = New Size(200, 30)
             .Anchor = AnchorStyles.Left
             .Dock = DockStyle.Right
             .Margin = New Padding(5)
@@ -132,6 +157,7 @@ Public Class ucParamRadio
         Dim vR As String
         vR = getItem(vSlug, cradio)
         '--------------
+        Me.AutoSize = True
     End Sub
 
     Friend Sub clist_SelectionChangeCommitted(sender As Object, e As EventArgs)
@@ -246,11 +272,14 @@ Public Class ucParamRadio
                 If ca Then
                     vPosBottom = vPosBottom + 20
                 End If
-
+                vFinalHeight = vPosBottom + radBtn.Size.Height
+                'Me.Size = New Size(Me.Size.Width, vPosBottom + radBtn.Size.Height)
                 vRadioIndex = vRadioIndex + 1
             End If
 
         Next
+        'Dim ccc As Integer
+
 
         Return "s"
 

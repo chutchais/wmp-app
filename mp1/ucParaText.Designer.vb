@@ -28,7 +28,7 @@ Partial Class ucParaText
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.Lime
+        Me.BackColor = System.Drawing.SystemColors.Control
         Me.Name = "ucParaText"
         Me.Size = New System.Drawing.Size(363, 26)
         Me.ResumeLayout(False)
