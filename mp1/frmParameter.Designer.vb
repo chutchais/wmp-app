@@ -30,7 +30,9 @@ Partial Class frmParameter
         Me.Label2 = New System.Windows.Forms.Label()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.tss1 = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ComboBox1 = New System.Windows.Forms.ComboBox()
+        Me.tts1 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.tss2 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.cbOperation = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -91,7 +93,7 @@ Partial Class frmParameter
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tss1})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tss1, Me.tts1, Me.tss2})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 544)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(799, 22)
@@ -103,14 +105,24 @@ Partial Class frmParameter
         Me.tss1.Name = "tss1"
         Me.tss1.Size = New System.Drawing.Size(0, 17)
         '
-        'ComboBox1
+        'tts1
         '
-        Me.ComboBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ComboBox1.FormattingEnabled = True
-        Me.ComboBox1.Location = New System.Drawing.Point(171, 5)
-        Me.ComboBox1.Name = "ComboBox1"
-        Me.ComboBox1.Size = New System.Drawing.Size(239, 26)
-        Me.ComboBox1.TabIndex = 7
+        Me.tts1.Name = "tts1"
+        Me.tts1.Size = New System.Drawing.Size(0, 17)
+        '
+        'tss2
+        '
+        Me.tss2.Name = "tss2"
+        Me.tss2.Size = New System.Drawing.Size(0, 17)
+        '
+        'cbOperation
+        '
+        Me.cbOperation.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cbOperation.FormattingEnabled = True
+        Me.cbOperation.Location = New System.Drawing.Point(171, 5)
+        Me.cbOperation.Name = "cbOperation"
+        Me.cbOperation.Size = New System.Drawing.Size(239, 26)
+        Me.cbOperation.TabIndex = 7
         '
         'Label3
         '
@@ -128,7 +140,7 @@ Partial Class frmParameter
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(799, 566)
         Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.ComboBox1)
+        Me.Controls.Add(Me.cbOperation)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.TextBox2)
@@ -154,6 +166,8 @@ Partial Class frmParameter
     Friend WithEvents Label2 As Label
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents tss1 As ToolStripStatusLabel
-    Friend WithEvents ComboBox1 As ComboBox
+    Friend WithEvents cbOperation As ComboBox
     Friend WithEvents Label3 As Label
+    Friend WithEvents tts1 As ToolStripStatusLabel
+    Friend WithEvents tss2 As ToolStripStatusLabel
 End Class

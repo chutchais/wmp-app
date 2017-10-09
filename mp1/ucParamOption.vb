@@ -100,6 +100,16 @@ Public Class ucParamOption
         End Set
     End Property
 
+    Private vRequired As Boolean
+    Public Property required() As Boolean
+        Get
+            Return vRequired
+        End Get
+        Set(ByVal value As Boolean)
+            vRequired = value
+        End Set
+    End Property
+
     Private Sub ucParamList_Load(sender As Object, e As EventArgs) Handles Me.Load
         ' Me.AutoSize = True
         Dim label As New Label
@@ -109,7 +119,7 @@ Public Class ucParamOption
 
         With label
             .Name = "caption"
-            .Text = vTitleValue
+            .Text = If(vRequired, "*" + vTitleValue, vTitleValue)
             .AutoSize = True
             '.Anchor = AnchorStyles.Left + AnchorStyles.Top
             .Dock = DockStyle.Left
@@ -181,10 +191,10 @@ Public Class ucParamOption
     Private Function getCode(vSlug_ As String) As String
         Dim iObject As Object
         iObject = getItemBySlug(vSlug_)
-        If Not IsDBNull(iObject("snippet")) Then
-            getCode = getSnippetBySlug(iObject("snippet"))("code")
-        Else
+        If iObject("snippet") Is Nothing Then
             getCode = ""
+        Else
+            getCode = getSnippetBySlug(iObject("snippet"))("code")
         End If
 
     End Function

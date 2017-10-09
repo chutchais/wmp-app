@@ -4,15 +4,6 @@ Imports System.Net
 Imports System.Web.Script.Serialization
 Imports System.Dynamic
 
-
-
-Public Class BaseControl
-    Protected Overridable Sub OnLoad(ByVal e As EventArgs)
-        'MessageBox.Show("BaseControl Click")
-        'base.OnLoad(e)
-    End Sub
-End Class
-
 <Runtime.InteropServices.ComVisible(True)>
 Public Class ucParamRadio
     'Start Property
@@ -109,9 +100,15 @@ Public Class ucParamRadio
         End Set
     End Property
 
-    Protected Overridable Sub OnLoad(e As EventArgs)
-
-    End Sub
+    Private vRequired As Boolean
+    Public Property required() As Boolean
+        Get
+            Return vRequired
+        End Get
+        Set(ByVal value As Boolean)
+            vRequired = value
+        End Set
+    End Property
 
     Private Sub ucParamList_Load(sender As Object, e As EventArgs) Handles Me.Load
 
@@ -123,7 +120,7 @@ Public Class ucParamRadio
 
         With label
             .Name = "caption"
-            .Text = vTitleValue
+            .Text = If(vRequired, "*" + vTitleValue, vTitleValue)
             .AutoSize = True
             '.Anchor = AnchorStyles.Left + AnchorStyles.Top
             .Dock = DockStyle.Left
@@ -217,7 +214,12 @@ Public Class ucParamRadio
     Private Function getCode(vSlug_ As String) As String
         Dim iObject As Object
         iObject = getItemBySlug(vSlug_)
-        getCode = getSnippetBySlug(iObject("snippet"))("code")
+        If iObject("snippet") Is Nothing Then
+            getCode = ""
+        Else
+            getCode = getSnippetBySlug(iObject("snippet"))("code")
+        End If
+
     End Function
 
     Private Function getItem(vSlug_ As String, ucRadio As RadioButton) As String

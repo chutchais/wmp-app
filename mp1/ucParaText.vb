@@ -69,6 +69,15 @@ Public Class ucParaText
         End Set
     End Property
 
+    Private vRequired As Boolean
+    Public Property required() As Boolean
+        Get
+            Return vRequired
+        End Get
+        Set(ByVal value As Boolean)
+            vRequired = value
+        End Set
+    End Property
     'End Property
 
     Private Sub ucParaText_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -82,7 +91,7 @@ Public Class ucParaText
 
         With label
             .Name = "caption"
-            .Text = vTitleValue
+            .Text = If(vRequired, "*" + vTitleValue, vTitleValue)
             '.Anchor = AnchorStyles.Left + AnchorStyles.Top
             .Dock = DockStyle.Left
         End With
@@ -207,13 +216,11 @@ Public Class ucParaText
 
     Private Function getCode(vSlug_ As String) As String
         Dim iObject As Object
-        Dim snippet As Object
         iObject = getItemBySlug(vSlug_)
-        snippet = iObject("snippet")
-        If Not snippet Is Nothing Then
-            getCode = getSnippetBySlug(iObject("snippet"))("code")
-        Else
+        If iObject("snippet") Is Nothing Then
             getCode = ""
+        Else
+            getCode = getSnippetBySlug(iObject("snippet"))("code")
         End If
 
     End Function

@@ -28,7 +28,7 @@ Partial Class ucParamRadio
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
+        Me.BackColor = System.Drawing.SystemColors.Control
         Me.Name = "ucParamRadio"
         Me.Size = New System.Drawing.Size(363, 26)
         Me.ResumeLayout(False)

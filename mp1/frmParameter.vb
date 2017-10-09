@@ -43,10 +43,7 @@ Public Class frmParameter
     Private ixRadio As Integer = 0
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-
         CreateObject()
-
-
     End Sub
 
     Sub CreateObject()
@@ -94,6 +91,7 @@ Public Class frmParameter
         Dim vRegExp As String
         Dim vItemSlug As String
         Dim vItemType As String
+        Dim vRequired As Boolean
 
         Dim vPosBottom As Integer = 10
         Dim ucText As New ucParaText
@@ -108,6 +106,7 @@ Public Class frmParameter
             vRegExp = objItem("regexp")
             vItemSlug = objItem("slug")
             vItemType = objItem("input_type")
+            vRequired = objItem("required")
             Select Case vItemType
                 Case "TEXT"
                     ucText = New ucParaText With {
@@ -119,7 +118,8 @@ Public Class frmParameter
                                 .slug = vItemSlug,
                                 .url = vUrl,
                                 .CurrentForm = Me,
-                                .Location = New Point(50, vPosBottom)
+                                .Location = New Point(50, vPosBottom),
+                                .required = vRequired
                                 }
                     vPosBottom = ucText.Location.Y + ucText.Height + 5
                     page.Controls.Add(ucText)
@@ -135,7 +135,8 @@ Public Class frmParameter
                         .slug = vItemSlug,
                         .url = vUrl,
                         .CurrentForm = Me,
-                        .Location = New Point(50, vPosBottom)
+                        .Location = New Point(50, vPosBottom),
+                        .required = vRequired
                     }
                     vPosBottom = ucList.Location.Y + ucList.Height + 5
                     page.Controls.Add(ucList)
@@ -152,7 +153,8 @@ Public Class frmParameter
                         .slug = vItemSlug,
                         .url = vUrl,
                         .CurrentForm = Me,
-                        .Location = New Point(50, vPosBottom)
+                        .Location = New Point(50, vPosBottom),
+                        .required = vRequired
                     }
 
                     page.Controls.Add(ucRadio)
@@ -171,7 +173,8 @@ Public Class frmParameter
                         .slug = vItemSlug,
                         .url = vUrl,
                         .CurrentForm = Me,
-                        .Location = New Point(50, vPosBottom)
+                        .Location = New Point(50, vPosBottom),
+                        .required = vRequired
                     }
                     page.Controls.Add(ucOption)
                     ucOption.Show()
@@ -314,5 +317,34 @@ Public Class frmParameter
             End If
         Next
         CreateObject()
+        getOperation()
     End Sub
+
+    Private Sub frmParameter_Load(sender As Object, e As EventArgs) Handles Me.Load
+        tss1.Text = vUrl
+
+        getOperation()
+    End Sub
+
+    Sub getOperation()
+        Dim operations As Object
+        Dim operation As Object
+        operations = getJsonObject(vUrl + "/api/operation/?name=")
+        If Not operations Is Nothing Then
+            Dim comboSource As New Dictionary(Of String, String)()
+            For Each operation In operations
+                comboSource.Add(operation("name") & ":" & operation("title"), operation("name"))
+            Next
+            With cbOperation
+                .DropDownStyle = ComboBoxStyle.DropDownList
+                .DataSource = New BindingSource(comboSource, Nothing)
+                .DisplayMember = "Key"
+                .ValueMember = "Value"
+                '.SelectedValue = vDefaultValue
+            End With
+        End If
+
+        'getItemBySlug = json
+    End Sub
+
 End Class
