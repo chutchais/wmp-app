@@ -22,11 +22,11 @@ Partial Class frmParameter
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
+        Me.btnStart = New System.Windows.Forms.Button()
+        Me.btnRefresh = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
-        Me.TextBox2 = New System.Windows.Forms.TextBox()
+        Me.txtSn = New System.Windows.Forms.TextBox()
+        Me.txtComment = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.tss1 = New System.Windows.Forms.ToolStripStatusLabel()
@@ -34,26 +34,30 @@ Partial Class frmParameter
         Me.tss2 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.cbOperation = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.btnCancel = New System.Windows.Forms.Button()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
-        'Button1
+        'btnStart
         '
-        Me.Button1.Location = New System.Drawing.Point(417, 33)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(109, 26)
-        Me.Button1.TabIndex = 0
-        Me.Button1.Text = "Start"
-        Me.Button1.UseVisualStyleBackColor = True
+        Me.btnStart.Location = New System.Drawing.Point(417, 33)
+        Me.btnStart.Name = "btnStart"
+        Me.btnStart.Size = New System.Drawing.Size(109, 26)
+        Me.btnStart.TabIndex = 0
+        Me.btnStart.TabStop = False
+        Me.btnStart.Text = "Start"
+        Me.btnStart.UseVisualStyleBackColor = True
         '
-        'Button2
+        'btnRefresh
         '
-        Me.Button2.Location = New System.Drawing.Point(417, 65)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(109, 26)
-        Me.Button2.TabIndex = 1
-        Me.Button2.Text = "Refresh"
-        Me.Button2.UseVisualStyleBackColor = True
+        Me.btnRefresh.Enabled = False
+        Me.btnRefresh.Location = New System.Drawing.Point(417, 58)
+        Me.btnRefresh.Name = "btnRefresh"
+        Me.btnRefresh.Size = New System.Drawing.Size(109, 26)
+        Me.btnRefresh.TabIndex = 1
+        Me.btnRefresh.TabStop = False
+        Me.btnRefresh.Text = "Refresh"
+        Me.btnRefresh.UseVisualStyleBackColor = True
         '
         'Label1
         '
@@ -65,22 +69,22 @@ Partial Class frmParameter
         Me.Label1.TabIndex = 2
         Me.Label1.Text = "Unit Serial Number :"
         '
-        'TextBox1
+        'txtSn
         '
-        Me.TextBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox1.Location = New System.Drawing.Point(171, 33)
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(240, 26)
-        Me.TextBox1.TabIndex = 3
+        Me.txtSn.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtSn.Location = New System.Drawing.Point(171, 33)
+        Me.txtSn.Name = "txtSn"
+        Me.txtSn.Size = New System.Drawing.Size(240, 26)
+        Me.txtSn.TabIndex = 3
         '
-        'TextBox2
+        'txtComment
         '
-        Me.TextBox2.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox2.Location = New System.Drawing.Point(171, 65)
-        Me.TextBox2.Multiline = True
-        Me.TextBox2.Name = "TextBox2"
-        Me.TextBox2.Size = New System.Drawing.Size(240, 67)
-        Me.TextBox2.TabIndex = 4
+        Me.txtComment.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtComment.Location = New System.Drawing.Point(171, 65)
+        Me.txtComment.Multiline = True
+        Me.txtComment.Name = "txtComment"
+        Me.txtComment.Size = New System.Drawing.Size(240, 67)
+        Me.txtComment.TabIndex = 2
         '
         'Label2
         '
@@ -134,20 +138,31 @@ Partial Class frmParameter
         Me.Label3.TabIndex = 8
         Me.Label3.Text = "Operation :"
         '
+        'btnCancel
+        '
+        Me.btnCancel.Location = New System.Drawing.Point(532, 33)
+        Me.btnCancel.Name = "btnCancel"
+        Me.btnCancel.Size = New System.Drawing.Size(109, 26)
+        Me.btnCancel.TabIndex = 9
+        Me.btnCancel.TabStop = False
+        Me.btnCancel.Text = "Cancel"
+        Me.btnCancel.UseVisualStyleBackColor = True
+        '
         'frmParameter
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(799, 566)
+        Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.cbOperation)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.TextBox2)
-        Me.Controls.Add(Me.TextBox1)
+        Me.Controls.Add(Me.txtComment)
+        Me.Controls.Add(Me.txtSn)
         Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.Button2)
-        Me.Controls.Add(Me.Button1)
+        Me.Controls.Add(Me.btnRefresh)
+        Me.Controls.Add(Me.btnStart)
         Me.Name = "frmParameter"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "8 Oclock -- Manufacturing Platform (Demo)"
@@ -158,11 +173,11 @@ Partial Class frmParameter
 
     End Sub
 
-    Friend WithEvents Button1 As Button
-    Friend WithEvents Button2 As Button
+    Friend WithEvents btnStart As Button
+    Friend WithEvents btnRefresh As Button
     Friend WithEvents Label1 As Label
-    Friend WithEvents TextBox1 As TextBox
-    Friend WithEvents TextBox2 As TextBox
+    Friend WithEvents txtSn As TextBox
+    Friend WithEvents txtComment As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents tss1 As ToolStripStatusLabel
@@ -170,4 +185,5 @@ Partial Class frmParameter
     Friend WithEvents Label3 As Label
     Friend WithEvents tts1 As ToolStripStatusLabel
     Friend WithEvents tss2 As ToolStripStatusLabel
+    Friend WithEvents btnCancel As Button
 End Class

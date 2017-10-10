@@ -21,9 +21,15 @@ Public Class frmParameter
         Return data
     End Function
 
+    Private Function getSerialNumber(vSerialNumber As String) As Object
+        Dim json As Object
+        json = getJsonObject(vUrl + "/api/serialnumber/?wip=true&number=" + vSerialNumber)
+        getSerialNumber = json
+    End Function
+
     Private Function getParameterBySlug(vRoutingDetailSlug As String) As Object
         Dim json As Object
-        json = getJsonObject(vUrl + "/api/routing-detail/" + vRoutingDetailSlug)
+        json = getJsonObject(vUrl + "/api/routingdetail/" + vRoutingDetailSlug)
         getParameterBySlug = json
     End Function
 
@@ -33,6 +39,12 @@ Public Class frmParameter
         getItemBySlug = json
     End Function
 
+    Private Function getRoutingDetail(vRoute As String, vOperation As String) As Object
+        Dim json As Object
+        json = getJsonObject(vUrl + "/api/routingdetail/?route=" + vRoute + "&operation=" & vOperation)
+        getRoutingDetail = json
+    End Function
+
     'Private Function getSnippetBySlug(vSnippetSlug As String) As Object
     '    Dim json As Object
     '    json = getJsonObject(vUrl + "/api/snippet/" + vSnippetSlug)
@@ -40,20 +52,103 @@ Public Class frmParameter
     'End Function
 
     Private vUrl As String = "http://127.0.0.1:8000"
-    Private ixRadio As Integer = 0
+    Private vCurrentRoutingDetailSlug As String
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        CreateObject()
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnStart.Click
+        If Not checkSerialNumber(txtSn.Text) Then
+            txtSn.Select(0, txtSn.Text.Length)
+            txtSn.Select()
+        Else
+            CreateObject(vCurrentRoutingDetailSlug)
+            btnStart.Enabled = False
+            btnRefresh.Enabled = True
+            txtSn.Enabled = False
+        End If
+
     End Sub
 
-    Sub CreateObject()
+    Function checkSerialNumber(vSn As String) As Boolean
+        Dim objSns As Object
+        objSns = getSerialNumber(vSn)
+
+        If objSns.length() = 0 Then
+            MsgBox("Serial number " & vSn & " doesn't exits in system",
+            MsgBoxStyle.Critical, "Not found Serial number")
+            Exit Function
+        End If
+
+        Dim vSnSlug As String = ""
+        Dim vWip As Boolean = False
+        Dim vSerialNumber As String = ""
+        Dim vWorkOrder As Object
+        Dim vRoute As Object
+        Dim objSn As Object = Nothing
+        For Each objSn In objSns
+            vSerialNumber = objSn("number")
+            vWorkOrder = objSn("workorder")
+            vSnSlug = objSn("slug")
+            vWip = objSn("wip")
+            vRoute = objSn("routing")
+        Next
+
+        If Not vWip Then
+            MsgBox("Serial number " & vSn & " is not in WIP",
+            MsgBoxStyle.Critical, "Not in WIP")
+            Exit Function
+        End If
+
+
+        'Get Routing for Serial number
+        vRoute = getSerialNumberRouteObject(vSerialNumber, vWorkOrder, vRoute, objSn)
+        If IsNothing(vRoute) Then
+            Exit Function
+        End If
+
+        'Get Routing Details (Route + Operation)
+        Dim objRouteDetail As Object
+        objRouteDetail = getRoutingDetail(vRoute("name"), cbOperation.SelectedValue)
+        If objRouteDetail.length() = 0 Then
+            MsgBox("Operation :" & cbOperation.SelectedValue & " is not in routing :" & vRoute,
+                   MsgBoxStyle.Critical, "Operation not exist.")
+            Exit Function
+        Else
+            'Final Route Detail Slug
+            vCurrentRoutingDetailSlug = objRouteDetail(0)("slug")
+        End If
+
+        Return True
+    End Function
+
+    Function getSerialNumberRouteObject(vSn As String, vWorkOrder As Object, vRoute As Object, objSn As Object) As Object
+        'Return Route of Serial number
+        If Not IsNothing(vRoute) Then
+            Return vRoute
+        End If
+
+        'Check WorkOrder Routing
+        If Not IsNothing(vWorkOrder("routing")) Then
+            Return vWorkOrder("routing")
+        End If
+
+        'Check Product Routing
+        If Not IsNothing(vWorkOrder("product")("routing")) Then
+            Return vWorkOrder("product")("routing")
+        End If
+
+        MsgBox("Not found Routing setting for this serial number", MsgBoxStyle.Critical, "Not found routing setting")
+        Return Nothing
+    End Function
+
+
+    Sub CreateObject(vRoutingDetailSlug As String)
         Dim objParams As Object
-        objParams = getParameterBySlug("a001-visual-inspection-routing1")
+        objParams = getParameterBySlug(vRoutingDetailSlug)
 
         Dim tabControl As New TabControl
         'Dim tabPage As New TabPage
         With tabControl
             .Name = "Parameter"
+            .TabIndex = 3
             .Location = New Point(0, 130)
             .Size = New Size(Me.Width, 300)
             .SizeMode = TabSizeMode.Normal
@@ -71,7 +166,7 @@ Public Class frmParameter
             ' AddHandler Text.Validating, AddressOf text_Validating
             tabControl.TabPages.Add(tabPage)
             ''------Add Parameter to Page---
-            vParamSlug = objParam("name")
+            vParamSlug = objParam("slug")
             addParameterToPage(vParamSlug, tabPage)
             ''------------------------------
         Next
@@ -307,7 +402,7 @@ Public Class frmParameter
         '    O.showOpject()
     End Sub
 
-    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
         ' TabControl = Nothing
         Dim aa As Object
 
@@ -316,7 +411,7 @@ Public Class frmParameter
                 aa.Dispose()
             End If
         Next
-        CreateObject()
+        CreateObject(vCurrentRoutingDetailSlug)
         getOperation()
     End Sub
 
@@ -324,6 +419,7 @@ Public Class frmParameter
         tss1.Text = vUrl
 
         getOperation()
+        txtSn.Select()
     End Sub
 
     Sub getOperation()
@@ -347,4 +443,31 @@ Public Class frmParameter
         'getItemBySlug = json
     End Sub
 
+    Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
+        Dim aa As Object
+        For Each aa In Me.Controls
+            If TypeOf aa Is TabControl Then
+                aa.Dispose()
+            End If
+        Next
+        txtSn.Enabled = True
+        txtSn.Select(0, txtSn.Text.Length)
+        txtSn.Select()
+        btnStart.Enabled = True
+        btnRefresh.Enabled = False
+    End Sub
+
+
+
+    Private Sub txtSn_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtSn.KeyPress
+        If e.KeyChar = Microsoft.VisualBasic.ChrW(Keys.Return) Then
+            Button1_Click(sender, e)
+            'SendKeys.Send("{TAB}")
+
+        End If
+    End Sub
+
+    Private Sub txtSn_TextChanged(sender As Object, e As EventArgs) Handles txtSn.TextChanged
+
+    End Sub
 End Class
