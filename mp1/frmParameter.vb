@@ -420,6 +420,7 @@ Public Class frmParameter
 
         getOperation()
         txtSn.Select()
+        showObjectName()
     End Sub
 
     Sub getOperation()
@@ -467,7 +468,43 @@ Public Class frmParameter
         End If
     End Sub
 
-    Private Sub txtSn_TextChanged(sender As Object, e As EventArgs) Handles txtSn.TextChanged
+    Dim toolTip1 As New ToolTip()
+    Private Sub showObjectName()
+        Dim nControl As Control
+        'Comment by Chutchai S on March 2,2009
+        'To fix program Crash , because below this command.
+        '    For Each nControl In UserControl.Controls
+        '        If Not TypeOf UserControl.ParentControls.Item(0) Is Form Then
+        '            nControl.ToolTipText = UserControl.ParentControls.Item(0).Name & "." & Extender.Name & "." & nControl.Name
+        '        Else
+        '            nControl.ToolTipText = Extender.Name & "." & nControl.Name
+        '        End If
+        '    Next
+
+        'Added by Chutchai S on March 2,2009
+        Dim strTooltrip As String
+        For Each nControl In Me.Controls
+            'nControl.ToolTipText = Extender.Name & "." & nControl.Name
+
+            'If vParentObjectName = "" Then
+            '    strTooltrip = Me.Name & "." & nControl.Name
+            'Else
+            '    strTooltrip = vParentObjectName & "." & Me.Name & "." & nControl.Name
+            'End If
+
+            'Dim vParentName As String
+
+            'If TypeOf Me.Parent Is Form Then
+            '    strTooltrip = Me.Name & "." & nControl.Name
+            'Else
+
+            '    vParentName = Me.Parent.Name
+            '    strTooltrip = vParentName & "." & Me.Name & "." & nControl.Name
+            'End If
+            strTooltrip = nControl.Name
+            toolTip1.SetToolTip(nControl, strTooltrip)
+
+        Next
 
     End Sub
 End Class
