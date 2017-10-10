@@ -45,6 +45,18 @@ Public Class frmParameter
         getRoutingDetail = json
     End Function
 
+    Private Function getRoutingDetail(vSlug As String) As Object
+        Dim json As Object
+        json = getJsonObject(vUrl + "/api/routingdetail/" & vSlug)
+        getRoutingDetail = json
+    End Function
+
+    Private Function getSnippetBySlug(vSnippetSlug As String) As Object
+        Dim json As Object
+        json = getJsonObject(vUrl + "/api/snippet/" + vSnippetSlug)
+        Return json
+    End Function
+
     'Private Function getSnippetBySlug(vSnippetSlug As String) As Object
     '    Dim json As Object
     '    json = getJsonObject(vUrl + "/api/snippet/" + vSnippetSlug)
@@ -106,9 +118,10 @@ Public Class frmParameter
 
         'Get Routing Details (Route + Operation)
         Dim objRouteDetail As Object
-        objRouteDetail = getRoutingDetail(vRoute("name"), cbOperation.SelectedValue)
+        Dim vOperation As String = cbOperation.SelectedValue
+        objRouteDetail = getRoutingDetail(vRoute("name"), vOperation)
         If objRouteDetail.length() = 0 Then
-            MsgBox("Operation :" & cbOperation.SelectedValue & " is not in routing :" & vRoute,
+            MsgBox("Operation :" & cbOperation.SelectedValue & " is not exist in routing :" & vRoute("name"),
                    MsgBoxStyle.Critical, "Operation not exist.")
             Exit Function
         Else
@@ -116,7 +129,65 @@ Public Class frmParameter
             vCurrentRoutingDetailSlug = objRouteDetail(0)("slug")
         End If
 
+        'Check Current Operation-
+        Dim vCurrentOpr As String
+        Dim vObjRoutingDetail As Object
+        vObjRoutingDetail = getRoutingDetail(vCurrentRoutingDetailSlug)
+        vCurrentOpr = objSn("current_operation")
+        If vCurrentOpr <> vOperation Then
+            'Case Current in system with working operation is not same
+            'Need to check Acceptance Code
+            If Not checkAcceptance(vObjRoutingDetail("accept_code")) Then
+                'exit return False
+                MsgBox("Either Wrong operation or No acceptace condition accepted",
+                        MsgBoxStyle.Critical, "Not accept to perform")
+                Exit Function
+            End If
+        End If
+
+
+
         Return True
+    End Function
+
+    Function checkAcceptance(vAcceptObjs As Object) As Boolean
+        'ANY True -- return True
+        Dim vAcceptObj As Object
+        Dim objSnippet As Object
+        Dim vSnippetSlug As String = ""
+        Dim vCode As String
+        For Each vAcceptObj In vAcceptObjs
+            vSnippetSlug = vAcceptObj("snippet")("slug")
+            objSnippet = getSnippetBySlug(vSnippetSlug)
+            vCode = objSnippet("code")
+            'Execute Script-----
+            If vCode <> "" And objSnippet("status") = "A" Then
+                If executeScript(vCode) Then
+                    checkAcceptance = True
+                    Exit For
+                End If
+            End If
+
+            '-------------------
+        Next
+    End Function
+
+    Private Function executeScript(vCode As String) As Boolean
+        Dim vCls As New clsMPFlex
+        'initial
+        vCls.Form = Me
+        vCls.Url = vUrl
+
+        Dim vReturn As Object
+        vReturn = vCls.executeScritp(vCode)
+        'MsgBox(vCls.Url)
+        'lblSuccess.Text = vCls.success
+        'lblMsg.Text = vCls.message
+        If Not vCls.success Then
+            MsgBox(vCls.error_message)
+        End If
+
+        Return vReturn
     End Function
 
     Function getSerialNumberRouteObject(vSn As String, vWorkOrder As Object, vRoute As Object, objSn As Object) As Object
@@ -463,48 +534,19 @@ Public Class frmParameter
     Private Sub txtSn_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtSn.KeyPress
         If e.KeyChar = Microsoft.VisualBasic.ChrW(Keys.Return) Then
             Button1_Click(sender, e)
-            'SendKeys.Send("{TAB}")
-
         End If
     End Sub
 
+    'Must Have function
     Dim toolTip1 As New ToolTip()
     Private Sub showObjectName()
         Dim nControl As Control
-        'Comment by Chutchai S on March 2,2009
-        'To fix program Crash , because below this command.
-        '    For Each nControl In UserControl.Controls
-        '        If Not TypeOf UserControl.ParentControls.Item(0) Is Form Then
-        '            nControl.ToolTipText = UserControl.ParentControls.Item(0).Name & "." & Extender.Name & "." & nControl.Name
-        '        Else
-        '            nControl.ToolTipText = Extender.Name & "." & nControl.Name
-        '        End If
-        '    Next
-
-        'Added by Chutchai S on March 2,2009
         Dim strTooltrip As String
         For Each nControl In Me.Controls
-            'nControl.ToolTipText = Extender.Name & "." & nControl.Name
-
-            'If vParentObjectName = "" Then
-            '    strTooltrip = Me.Name & "." & nControl.Name
-            'Else
-            '    strTooltrip = vParentObjectName & "." & Me.Name & "." & nControl.Name
-            'End If
-
-            'Dim vParentName As String
-
-            'If TypeOf Me.Parent Is Form Then
-            '    strTooltrip = Me.Name & "." & nControl.Name
-            'Else
-
-            '    vParentName = Me.Parent.Name
-            '    strTooltrip = vParentName & "." & Me.Name & "." & nControl.Name
-            'End If
             strTooltrip = nControl.Name
             toolTip1.SetToolTip(nControl, strTooltrip)
 
         Next
-
     End Sub
+    '------------------
 End Class
