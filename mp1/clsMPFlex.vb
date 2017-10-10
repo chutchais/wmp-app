@@ -450,37 +450,78 @@ HasError:
 
     End Sub
 
+    Public Function FindControl(root As Control, target As String) As Control
+        'On Error GoTo HasError
+        If root.Name = target Then
+            Return root
+        End If
+
+        If Not root.HasChildren Then
+            Return Nothing
+        End If
+
+        Dim newTarget As String
+        newTarget = Split(target, ".")(0)
+
+        Dim result As Control = Nothing
+        For Each result In root.Controls
+            result = FindControl(result, newTarget)
+            If Not IsNothing(result) Then
+                Return result
+                Exit For
+            End If
+        Next
+
+        Exit Function
+HasError:
+        FindControl = Nothing
+
+    End Function
+
     Public Function getObject(vControlName As String) As Object  'vControlName=1.text1 (StepName.Control)
         On Error GoTo HasError
         Dim ddd As Control = Nothing
-        'ObjectName = vObjName
-        Dim vStep() As String
+        Dim vSteps() As String
 
-        vStep = Split(ObjectName, ".")
+        vSteps = Split(ObjectName, ".")
 
-        If UBound(vStep) = 0 Then 'One level
-            If Not Form Is Nothing Then
-                ddd = Form.Controls(vStep(0))
+        '---Recursive finding Control---
+        Dim vControl As Control = Form
+        Dim vStep As String
+        For Each vStep In vSteps
+            ddd = FindControl(vControl, vStep)
+            If Not IsNothing(ddd) Then
+                vControl = ddd
+                Continue For
             End If
-        End If
+        Next
 
-        If UBound(vStep) = 1 Then 'One level
-            If Not Form Is Nothing Then
-                'ddd = Form.Controls(vStep(0)).object.localControls(vStep(1))
-                ddd = Form.Controls(vStep(0)).Controls(vStep(1))
-            End If
-        End If
+        '-------
+        'Commit on Oct 10,2017
+        'If UBound(vSteps) = 0 Then 'One level
+        '    If Not Form Is Nothing Then
+        '        ddd = Form.Controls(vSteps(0))
+        '    End If
+        'End If
 
-        If UBound(vStep) = 2 Then 'One level'Two level
-            If Not Form Is Nothing Then
-                'ddd = Form.Controls(vStep(0)).object.localControls(vStep(1)).object.localControls(vStep(2))
-                ddd = Form.Controls(vStep(0)).Controls(vStep(1)).Controls(vStep(2))
-            End If
-        End If
+        'If UBound(vSteps) = 1 Then 'One level
+        '    If Not Form Is Nothing Then
+        '        'ddd = Form.Controls(vStep(0)).object.localControls(vStep(1))
+        '        ddd = Form.Controls(vSteps(0)).Controls(vSteps(1))
+        '    End If
+        'End If
+
+        'If UBound(vSteps) = 2 Then 'One level'Two level
+        '    If Not Form Is Nothing Then
+        '        'ddd = Form.Controls(vStep(0)).object.localControls(vStep(1)).object.localControls(vStep(2))
+        '        ddd = Form.Controls(vSteps(0)).Controls(vSteps(1)).Controls(vSteps(2))
+        '    End If
+        'End If
         getObject = ddd
         Exit Function
 HasError:
         getObject = Nothing
+        MsgBox(Err.Description, MsgBoxStyle.Critical, "Error on Finding control")
 
     End Function
 
