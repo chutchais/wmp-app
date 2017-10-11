@@ -133,7 +133,13 @@ Public Class frmParameter
         Dim vCurrentOpr As String
         Dim vObjRoutingDetail As Object
         vObjRoutingDetail = getRoutingDetail(vCurrentRoutingDetailSlug)
-        vCurrentOpr = objSn("current_operation")
+
+        If Not IsNothing(objSn("current_operation")) Then
+            vCurrentOpr = objSn("current_operation")("name")
+        Else
+            vCurrentOpr = objSn("current_operation")
+        End If
+
         If vCurrentOpr <> vOperation Then
             'Case Current in system with working operation is not same
             'Need to check Acceptance Code
@@ -143,6 +149,14 @@ Public Class frmParameter
                         MsgBoxStyle.Critical, "Not accept to perform")
                 Exit Function
             End If
+        End If
+
+
+        If checkExceptance(vObjRoutingDetail("except_code")) Then
+            'exit return False
+            MsgBox("Not allow to operate on this operation",
+                        MsgBoxStyle.Critical, "Exceptance check")
+            Exit Function
         End If
 
 
@@ -156,6 +170,7 @@ Public Class frmParameter
         Dim objSnippet As Object
         Dim vSnippetSlug As String = ""
         Dim vCode As String
+        checkAcceptance = False
         For Each vAcceptObj In vAcceptObjs
             vSnippetSlug = vAcceptObj("snippet")("slug")
             objSnippet = getSnippetBySlug(vSnippetSlug)
@@ -167,7 +182,28 @@ Public Class frmParameter
                     Exit For
                 End If
             End If
+            '-------------------
+        Next
+    End Function
 
+    Function checkExceptance(vExceptObjs As Object) As Boolean
+        'ANY True -- return True
+        Dim vExceptObj As Object
+        Dim objSnippet As Object
+        Dim vSnippetSlug As String = ""
+        Dim vCode As String
+        checkExceptance = False
+        For Each vExceptObj In vExceptObjs
+            vSnippetSlug = vExceptObj("snippet")("slug")
+            objSnippet = getSnippetBySlug(vSnippetSlug)
+            vCode = objSnippet("code")
+            'Execute Script-----
+            If vCode <> "" And objSnippet("status") = "A" Then
+                If executeScript(vCode) Then
+                    checkExceptance = True
+                    Exit For
+                End If
+            End If
             '-------------------
         Next
     End Function
