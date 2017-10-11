@@ -65,6 +65,9 @@ Public Class frmParameter
 
     Private vUrl As String = "http://127.0.0.1:8000"
     Private vCurrentRoutingDetailSlug As String
+    Private vDefaultNextPassOperation As String
+    Private vDefaultNextFailOperation As String
+
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnStart.Click
         If Not checkSerialNumber(txtSn.Text) Then
@@ -75,6 +78,9 @@ Public Class frmParameter
             btnStart.Enabled = False
             btnRefresh.Enabled = True
             txtSn.Enabled = False
+
+            btnPass.Enabled = True
+            btnFail.Enabled = True
         End If
 
     End Sub
@@ -101,6 +107,7 @@ Public Class frmParameter
             vSnSlug = objSn("slug")
             vWip = objSn("wip")
             vRoute = objSn("routing")
+
         Next
 
         If Not vWip Then
@@ -140,6 +147,15 @@ Public Class frmParameter
             vCurrentOpr = objSn("current_operation")
         End If
 
+        'get Next pass and Next Fail.
+        If Not IsNothing(vObjRoutingDetail("next_pass")) Then
+            vDefaultNextPassOperation = vObjRoutingDetail("next_pass")("name")
+        End If
+        If Not IsNothing(vObjRoutingDetail("next_fail")) Then
+            vDefaultNextFailOperation = vObjRoutingDetail("next_fail")("name")
+        End If
+        '-----------------------------
+
         If vCurrentOpr <> vOperation Then
             'Case Current in system with working operation is not same
             'Need to check Acceptance Code
@@ -160,7 +176,7 @@ Public Class frmParameter
         End If
 
 
-
+        'If everything is Okay ,it will return True
         Return True
     End Function
 
@@ -563,6 +579,9 @@ Public Class frmParameter
         txtSn.Select()
         btnStart.Enabled = True
         btnRefresh.Enabled = False
+
+        btnPass.Enabled = False
+        btnFail.Enabled = False
     End Sub
 
 
@@ -572,6 +591,50 @@ Public Class frmParameter
             Button1_Click(sender, e)
         End If
     End Sub
+
+    Private Sub btnFail_Click(sender As Object, e As EventArgs) Handles btnFail.Click
+        checkNextCondition(vDefaultNextFailOperation)
+    End Sub
+
+    Private Sub btnPass_Click(sender As Object, e As EventArgs) Handles btnPass.Click
+        checkNextCondition(vDefaultNextPassOperation)
+    End Sub
+
+    Function checkNextCondition(vDefaultNextOpr As String) As Boolean
+        Dim objRoutingDetail As Object
+        objRoutingDetail = getRoutingDetail(vCurrentRoutingDetailSlug)
+
+        Dim vNextoprObjs As Object
+        vNextoprObjs = objRoutingDetail("next_code")
+        'ANY True -- return True
+        Dim vNextoprObj As Object
+        Dim objSnippet As Object
+        Dim vSnippetSlug As String = ""
+        Dim vTitle As String
+        Dim vNextOpr As String = ""
+        Dim vCode As String
+        checkNextCondition = False
+        For Each vNextoprObj In vNextoprObjs
+            vSnippetSlug = vNextoprObj("slug")
+            objSnippet = getSnippetBySlug(vSnippetSlug)
+            vTitle = vNextoprObj("title")
+            vNextOpr = vNextoprObj("operation")
+            vCode = objSnippet("code")
+            'Execute Script-----
+            If vCode <> "" And objSnippet("status") = "A" Then
+                If executeScript(vCode) Then
+                    ' checkAcceptance = True
+                    MsgBox(vTitle & " is correct condition " & vbCrLf &
+                           "System will move unit to operation " & vNextOpr,
+                           MsgBoxStyle.Information, "Routing condition information")
+                    Exit Function
+                End If
+            End If
+            '-------------------
+        Next
+        MsgBox("System will move unit to operation " & vDefaultNextOpr,
+                           MsgBoxStyle.Information, "Default Routing")
+    End Function
 
     'Must Have function
     Dim toolTip1 As New ToolTip()
@@ -584,5 +647,7 @@ Public Class frmParameter
 
         Next
     End Sub
+
+
     '------------------
 End Class

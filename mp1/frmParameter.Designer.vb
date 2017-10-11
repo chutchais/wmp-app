@@ -35,6 +35,8 @@ Partial Class frmParameter
         Me.cbOperation = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.btnCancel = New System.Windows.Forms.Button()
+        Me.btnPass = New System.Windows.Forms.Button()
+        Me.btnFail = New System.Windows.Forms.Button()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -148,11 +150,37 @@ Partial Class frmParameter
         Me.btnCancel.Text = "Cancel"
         Me.btnCancel.UseVisualStyleBackColor = True
         '
+        'btnPass
+        '
+        Me.btnPass.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnPass.Enabled = False
+        Me.btnPass.Location = New System.Drawing.Point(289, 500)
+        Me.btnPass.Name = "btnPass"
+        Me.btnPass.Size = New System.Drawing.Size(109, 41)
+        Me.btnPass.TabIndex = 10
+        Me.btnPass.TabStop = False
+        Me.btnPass.Text = "Pass"
+        Me.btnPass.UseVisualStyleBackColor = True
+        '
+        'btnFail
+        '
+        Me.btnFail.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnFail.Enabled = False
+        Me.btnFail.Location = New System.Drawing.Point(174, 500)
+        Me.btnFail.Name = "btnFail"
+        Me.btnFail.Size = New System.Drawing.Size(109, 41)
+        Me.btnFail.TabIndex = 11
+        Me.btnFail.TabStop = False
+        Me.btnFail.Text = "Fail"
+        Me.btnFail.UseVisualStyleBackColor = True
+        '
         'frmParameter
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(799, 566)
+        Me.Controls.Add(Me.btnFail)
+        Me.Controls.Add(Me.btnPass)
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.cbOperation)
@@ -186,4 +214,6 @@ Partial Class frmParameter
     Friend WithEvents tts1 As ToolStripStatusLabel
     Friend WithEvents tss2 As ToolStripStatusLabel
     Friend WithEvents btnCancel As Button
+    Friend WithEvents btnPass As Button
+    Friend WithEvents btnFail As Button
 End Class
