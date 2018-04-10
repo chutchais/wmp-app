@@ -77,12 +77,20 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsAuthentication.vb" />
     <Compile Include="clsMPFlex.vb" />
+    <Compile Include="Dictionary.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.vb">
       <DependentUpon>Form1.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLoginForm.Designer.vb">
+      <DependentUpon>frmLoginForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmLoginForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmParameter.Designer.vb">
@@ -149,6 +157,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmLoginForm.resx">
+      <DependentUpon>frmLoginForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmParameter.resx">
       <DependentUpon>frmParameter.vb</DependentUpon>
