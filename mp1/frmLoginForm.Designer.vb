@@ -103,10 +103,9 @@ Partial Class frmLoginForm
         '
         'lblStatus
         '
-        Me.lblStatus.AutoSize = True
         Me.lblStatus.Location = New System.Drawing.Point(171, 124)
         Me.lblStatus.Name = "lblStatus"
-        Me.lblStatus.Size = New System.Drawing.Size(37, 13)
+        Me.lblStatus.Size = New System.Drawing.Size(221, 34)
         Me.lblStatus.TabIndex = 6
         Me.lblStatus.Text = "Status"
         Me.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft

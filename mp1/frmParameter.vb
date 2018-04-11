@@ -3,6 +3,8 @@ Imports System.Text.RegularExpressions
 Imports System.Net
 Imports System.Web.Script.Serialization
 Imports System.Dynamic
+Imports System.IO
+Imports System.Text
 
 <Runtime.InteropServices.ComVisible(True)>
 Public Class frmParameter
@@ -13,12 +15,32 @@ Public Class frmParameter
         Return reply
     End Function
 
-    Public Shared Function getJsonObject(ByVal address As String) As Object
+    Public Shared Function getJsonObject3(ByVal address As String) As Object
         Dim client As WebClient = New WebClient()
         Dim json As String = client.DownloadString(address)
         Dim jss = New JavaScriptSerializer()
         Dim data As Object = jss.Deserialize(Of Object)(json)
         Return data
+    End Function
+
+    Public Shared Function getJsonObject(ByVal address As String) As Object
+        'Support request with Token
+        Dim request As WebRequest = WebRequest.Create(address)
+        request.Method = "GET"
+        Dim byteArray As Byte() = Encoding.UTF8.GetBytes("")
+        request.PreAuthenticate = True
+        request.Headers.Add("Authorization", "Bearer " + Token_access)
+
+
+        Dim myHttpWebResponse = CType(request.GetResponse(), HttpWebResponse)
+        Dim myWebSource As New StreamReader(myHttpWebResponse.GetResponseStream())
+        Dim myPageSource As String = myWebSource.ReadToEnd()
+
+        Dim jss = New JavaScriptSerializer()
+        Dim data As Object = jss.Deserialize(Of Object)(myPageSource)
+        Return data
+
+
     End Function
 
     Private Function getSerialNumber(vSerialNumber As String) As Object
@@ -63,7 +85,7 @@ Public Class frmParameter
     '    Return json
     'End Function
 
-    Private vUrl As String = "http://127.0.0.1:8000"
+    Private vUrl As String = Root_url
     Private vCurrentRoutingDetailSlug As String
     Private vDefaultNextPassOperation As String
     Private vDefaultNextFailOperation As String
@@ -549,7 +571,7 @@ Public Class frmParameter
     Sub getOperation()
         Dim operations As Object
         Dim operation As Object
-        operations = getJsonObject(vUrl + "/api/operation/?name=")
+        operations = getJsonObject(vUrl + "/api/operation/")
         If Not operations Is Nothing Then
             Dim comboSource As New Dictionary(Of String, String)()
             For Each operation In operations
