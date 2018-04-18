@@ -6,6 +6,10 @@ Imports System.Text
 Imports System.Web.Script.Serialization
 
 
+
+
+
+
 Public Class frmLoginForm
 
     ' TODO: Insert code to perform custom authentication using the provided username and password 
@@ -31,6 +35,12 @@ Public Class frmLoginForm
         vTokenResult = clsAuthen.requestToken()
         lblStatus.Text = clsAuthen.Message
         lblStatus.ForeColor = IIf(vTokenResult, Color.Green, Color.Red)
+
+        'Assign public variable (MUST -- Very Importance)
+        user_id = clsAuthen.user_id_token
+        access_token = clsAuthen.access_token
+        refresh_token = clsAuthen.requestToken
+        '------------------------
 
         If vTokenResult Then
             frmParameter.Show()

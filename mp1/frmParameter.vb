@@ -29,7 +29,7 @@ Public Class frmParameter
         request.Method = "GET"
         Dim byteArray As Byte() = Encoding.UTF8.GetBytes("")
         request.PreAuthenticate = True
-        request.Headers.Add("Authorization", "Bearer " + Token_access)
+        request.Headers.Add("Authorization", "Bearer " + access_token)
 
 
         Dim myHttpWebResponse = CType(request.GetResponse(), HttpWebResponse)
@@ -563,15 +563,30 @@ Public Class frmParameter
     Private Sub frmParameter_Load(sender As Object, e As EventArgs) Handles Me.Load
         tss1.Text = vUrl
 
-        getOperation()
+        'Get authorized operation
+        getOperation(user_id)
+
+
         txtSn.Select()
         showObjectName()
     End Sub
 
-    Sub getOperation()
+    Sub getOperation(Optional vUserId As String = "")
         Dim operations As Object
         Dim operation As Object
-        operations = getJsonObject(vUrl + "/api/operation/")
+
+        'if vUserId is Blank --> get all existing operation
+        'if exist -->get only authorize operation
+
+        If vUserId <> "" Then
+            operations = getJsonObject(vUrl + "/api/users/" & vUserId & "/")("operations")
+        Else
+            operations = getJsonObject(vUrl + "/api/operation/")
+        End If
+
+
+
+
         If Not operations Is Nothing Then
             Dim comboSource As New Dictionary(Of String, String)()
             For Each operation In operations
