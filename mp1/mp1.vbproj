@@ -89,6 +89,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsAPIService.vb" />
     <Compile Include="clsAuthentication.vb" />
     <Compile Include="clsMPFlex.vb" />
     <Compile Include="Dictionary.vb" />

@@ -8,6 +8,10 @@ Imports System.Text
 
 <Runtime.InteropServices.ComVisible(True)>
 Public Class frmParameter
+
+    Dim objApiService As New clsAPIService
+
+    'Using Function()
     Public Shared Function getJsonString(ByVal address As String) As String
 
         Dim client As WebClient = New WebClient()
@@ -15,70 +19,110 @@ Public Class frmParameter
         Return reply
     End Function
 
-    Public Shared Function getJsonObject3(ByVal address As String) As Object
-        Dim client As WebClient = New WebClient()
-        Dim json As String = client.DownloadString(address)
-        Dim jss = New JavaScriptSerializer()
-        Dim data As Object = jss.Deserialize(Of Object)(json)
-        Return data
-    End Function
+    'Public Shared Function getJsonObject3(ByVal address As String) As Object
+    '    Dim client As WebClient = New WebClient()
+    '    Dim json As String = client.DownloadString(address)
+    '    Dim jss = New JavaScriptSerializer()
+    '    Dim data As Object = jss.Deserialize(Of Object)(json)
+    '    Return data
+    'End Function
 
-    Public Shared Function getJsonObject(ByVal address As String) As Object
-        'Support request with Token
-        Dim request As WebRequest = WebRequest.Create(address)
-        request.Method = "GET"
-        Dim byteArray As Byte() = Encoding.UTF8.GetBytes("")
-        request.PreAuthenticate = True
-        request.Headers.Add("Authorization", "Bearer " + access_token)
-
-
-        Dim myHttpWebResponse = CType(request.GetResponse(), HttpWebResponse)
-        Dim myWebSource As New StreamReader(myHttpWebResponse.GetResponseStream())
-        Dim myPageSource As String = myWebSource.ReadToEnd()
-
-        Dim jss = New JavaScriptSerializer()
-        Dim data As Object = jss.Deserialize(Of Object)(myPageSource)
-        Return data
+    'Public Shared Function getJsonObject(ByVal address As String) As Object
+    '    'Support request with Token
+    '    Dim request As WebRequest = WebRequest.Create(address)
+    '    request.Method = "GET"
+    '    Dim byteArray As Byte() = Encoding.UTF8.GetBytes("")
+    '    request.PreAuthenticate = True
+    '    request.Headers.Add("Authorization", "Bearer " + access_token)
 
 
-    End Function
+    '    Dim myHttpWebResponse = CType(request.GetResponse(), HttpWebResponse)
+    '    Dim myWebSource As New StreamReader(myHttpWebResponse.GetResponseStream())
+    '    Dim myPageSource As String = myWebSource.ReadToEnd()
+
+    '    Dim jss = New JavaScriptSerializer()
+    '    Dim data As Object = jss.Deserialize(Of Object)(myPageSource)
+    '    Return data
+
+
+    'End Function
 
     Private Function getSerialNumber(vSerialNumber As String) As Object
         Dim json As Object
-        json = getJsonObject(vUrl + "/api/serialnumber/?wip=true&number=" + vSerialNumber)
+        json = objApiService.getJsonObject(vUrl + "/api/serialnumber/?q=" + vSerialNumber)
         getSerialNumber = json
     End Function
 
-    Private Function getParameterBySlug(vRoutingDetailSlug As String) As Object
-        Dim json As Object
-        json = getJsonObject(vUrl + "/api/routingdetail/" + vRoutingDetailSlug)
-        getParameterBySlug = json
-    End Function
 
-    Private Function getItemBySlug(vParameterSlug As String) As Object
-        Dim json As Object
-        json = getJsonObject(vUrl + "/api/parameter/" + vParameterSlug)
-        getItemBySlug = json
-    End Function
+    'Private Function getObjectByUrl(vUrl As String) As Object
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl)
+    '    getObjectByUrl = json
+    'End Function
 
-    Private Function getRoutingDetail(vRoute As String, vOperation As String) As Object
-        Dim json As Object
-        json = getJsonObject(vUrl + "/api/routingdetail/?route=" + vRoute + "&operation=" & vOperation)
-        getRoutingDetail = json
-    End Function
+    'Private Function getObjectBySlug(vApp As String, vSlug As String) As Object
+    '    Dim json As Object
+    '    Dim vUrlSlug As String
+    '    vUrlSlug = vUrl + "/api/" + vApp + "/" + vSlug & "/"
+    '    json = getJsonObject(vUrlSlug)
+    '    getObjectBySlug = json
+    'End Function
 
-    Private Function getRoutingDetail(vSlug As String) As Object
-        Dim json As Object
-        json = getJsonObject(vUrl + "/api/routingdetail/" & vSlug)
-        getRoutingDetail = json
-    End Function
+    'Private Function getRoutingDetail(vRoute As String, vOperation As String) As Object
+    '    'VRoute = Routing name
+    '    'vOperation = Operation name
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl + "/api/routing-detail/?route=" + vRoute + "&operation=" & vOperation)
+    '    Return json
+    'End Function
 
-    Private Function getSnippetBySlug(vSnippetSlug As String) As Object
-        Dim json As Object
-        json = getJsonObject(vUrl + "/api/snippet/" + vSnippetSlug)
-        Return json
-    End Function
+    ''End used Function
 
+    'Private Function getParameterBySlug(vRoutingDetailSlug As String) As Object
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl + "/api/routingdetail/" + vRoutingDetailSlug)
+    '    getParameterBySlug = json
+    'End Function
+
+    'Private Function getItemBySlug(vParameterSlug As String) As Object
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl + "/api/parameter/" + vParameterSlug)
+    '    getItemBySlug = json
+    'End Function
+
+
+
+    'Private Function getRouting(vRouteSlug As String) As Object
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl + "/api/routing/" + vRouteSlug)
+    '    getRouting = json
+    'End Function
+
+
+
+    'Private Function getRoutingDetail(vSlug As String) As Object
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl + "/api/routingdetail/" & vSlug)
+    '    getRoutingDetail = json
+    'End Function
+
+    'Private Function getSnippetBySlug(vSnippetSlug As String) As Object
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl + "/api/snippet/" + vSnippetSlug)
+    '    Return json
+    'End Function
+
+    'Private Function getWorkOrder(vWorkOrderSlug As String) As Object
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl + "/api/workorder/" + vWorkOrderSlug + "/")
+    '    getWorkOrder = json
+    'End Function
+
+    'Private Function getProduct(vProductSlug As String) As Object
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl + "/api/product/" + vProductSlug + "/")
+    '    getProduct = json
+    'End Function
     'Private Function getSnippetBySlug(vSnippetSlug As String) As Object
     '    Dim json As Object
     '    json = getJsonObject(vUrl + "/api/snippet/" + vSnippetSlug)
@@ -87,6 +131,7 @@ Public Class frmParameter
 
     Private vUrl As String = Root_url
     Private vCurrentRoutingDetailSlug As String
+    Private vCurrentRoutingDetailUrl As String
     Private vDefaultNextPassOperation As String
     Private vDefaultNextFailOperation As String
 
@@ -111,6 +156,8 @@ Public Class frmParameter
         Dim objSns As Object
         objSns = getSerialNumber(vSn)
 
+        'Return multiple Record
+        'Current workOrder is WIP=True
         If objSns.length() = 0 Then
             MsgBox("Serial number " & vSn & " doesn't exits in system",
             MsgBoxStyle.Critical, "Not found Serial number")
@@ -118,18 +165,29 @@ Public Class frmParameter
         End If
 
         Dim vSnSlug As String = ""
+        Dim vSnUrl As String = ""
         Dim vWip As Boolean = False
         Dim vSerialNumber As String = ""
-        Dim vWorkOrder As Object
-        Dim vRoute As Object
+
+        'Dim objWorkOrder As Object = Nothing
+        Dim vWorkOrder As String = ""
+
+        Dim objRoute As Object = Nothing
+        Dim vRoute As String = ""
+
         Dim objSn As Object = Nothing
         For Each objSn In objSns
             vSerialNumber = objSn("number")
-            vWorkOrder = objSn("workorder")
+            'objWorkOrder = objSn("workorder")
             vSnSlug = objSn("slug")
             vWip = objSn("wip")
-            vRoute = objSn("routing")
-
+            'objRoute = objSn("routing")
+            'Looking for Record that WIP == True
+            If vWip Then
+                'vWorkOrder = objWorkOrder("name")
+                vSnUrl = objSn("url")
+                Exit For
+            End If
         Next
 
         If Not vWip Then
@@ -138,17 +196,28 @@ Public Class frmParameter
             Exit Function
         End If
 
+        'Get Serial number details for particular SN
+        objSn = objApiService.getObjectByUrl(vSnUrl)
 
         'Get Routing for Serial number
-        vRoute = getSerialNumberRouteObject(vSerialNumber, vWorkOrder, vRoute, objSn)
-        If IsNothing(vRoute) Then
+        Dim objRouting As Object = Nothing
+        objRouting = getSerialNumberRouteObject(vSn, vSnUrl)
+        If IsNothing(objRouting) Then
             Exit Function
         End If
 
+        'Start Check Routing process
+        Dim vCurrentOpr As String
+        Dim vSelectedOpr As String
+        '1)Check if SN.curr == Selected.operation
+        vCurrentOpr = objSn("current_operation")
+        vSelectedOpr = cbOperation.SelectedValue
+
+
         'Get Routing Details (Route + Operation)
         Dim objRouteDetail As Object
-        Dim vOperation As String = cbOperation.SelectedValue
-        objRouteDetail = getRoutingDetail(vRoute("name"), vOperation)
+
+        objRouteDetail = objApiService.getRoutingDetail(objRouting("name"), vSelectedOpr)
         If objRouteDetail.length() = 0 Then
             MsgBox("Operation :" & cbOperation.SelectedValue & " is not exist in routing :" & vRoute("name"),
                    MsgBoxStyle.Critical, "Operation not exist.")
@@ -156,65 +225,93 @@ Public Class frmParameter
         Else
             'Final Route Detail Slug
             vCurrentRoutingDetailSlug = objRouteDetail(0)("slug")
+            vCurrentRoutingDetailUrl = objRouteDetail(0)("url")
         End If
 
-        'Check Current Operation-
-        Dim vCurrentOpr As String
-        Dim vObjRoutingDetail As Object
-        vObjRoutingDetail = getRoutingDetail(vCurrentRoutingDetailSlug)
+        'Get Routing Detail
+        objRouteDetail = objApiService.getObjectByUrl(vCurrentRoutingDetailUrl)
 
-        If Not IsNothing(objSn("current_operation")) Then
-            vCurrentOpr = objSn("current_operation")("name")
-        Else
-            vCurrentOpr = objSn("current_operation")
-        End If
-
-        'get Next pass and Next Fail.
-        If Not IsNothing(vObjRoutingDetail("next_pass")) Then
-            vDefaultNextPassOperation = vObjRoutingDetail("next_pass")("name")
-        End If
-        If Not IsNothing(vObjRoutingDetail("next_fail")) Then
-            vDefaultNextFailOperation = vObjRoutingDetail("next_fail")("name")
-        End If
-        '-----------------------------
-
-        If vCurrentOpr <> vOperation Then
-            'Case Current in system with working operation is not same
-            'Need to check Acceptance Code
-            If Not checkAcceptance(vObjRoutingDetail("accept_code")) Then
-                'exit return False
-                MsgBox("Either Wrong operation or No acceptace condition accepted",
-                        MsgBoxStyle.Critical, "Not accept to perform")
-                Exit Function
+        If vCurrentOpr = vSelectedOpr Then
+            'In case Sn.curr.Operation = Selected.Operation  -- check only Reject Routing
+            If IsNothing(objRouteDetail("reject_code")) Then
+                'Operation Matched and No Reject condition.
+                Return True
+            Else
+                'Check Reject Code
+                If checkExceptance(objRouteDetail("reject_code")) Then
+                    'exit return False
+                    MsgBox("Not allow to operate on this operation",
+                                MsgBoxStyle.Critical, "Exceptance check")
+                    Exit Function
+                End If
             End If
+        Else
+            'In case Sn.curr.Operation <> Selected.Operation  -- check only Accept Routing
+            If IsNothing(objRouteDetail("accept_code")) Then
+                'Operation Matched and No Reject condition.
+                Return False
+            Else
+                'Check Accept Code
+                If Not checkAcceptance(objRouteDetail("accept_code")) Then
+                    'exit return False
+                    MsgBox("Either Wrong operation or No acceptace condition accepted",
+                            MsgBoxStyle.Critical, "Not accept to perform")
+                    Exit Function
+                End If
+            End If
+
+
         End If
 
 
-        If checkExceptance(vObjRoutingDetail("except_code")) Then
-            'exit return False
-            MsgBox("Not allow to operate on this operation",
-                        MsgBoxStyle.Critical, "Exceptance check")
-            Exit Function
-        End If
+
+
+        ''Check Current Operation-
+        'Dim vCurrentOpr As String
+        'Dim vObjRoutingDetail As Object
+        'vObjRoutingDetail = getRoutingDetail(vCurrentRoutingDetailSlug)
+
+        'If Not IsNothing(objSn("current_operation")) Then
+        '    vCurrentOpr = objSn("current_operation")("name")
+        'Else
+        '    vCurrentOpr = objSn("current_operation")
+        'End If
+
+        ''get Next pass and Next Fail.
+        'If Not IsNothing(vObjRoutingDetail("next_pass")) Then
+        '    vDefaultNextPassOperation = vObjRoutingDetail("next_pass")("name")
+        'End If
+        'If Not IsNothing(vObjRoutingDetail("next_fail")) Then
+        '    vDefaultNextFailOperation = vObjRoutingDetail("next_fail")("name")
+        'End If
+        ''-----------------------------
+
+
+
+
+
 
 
         'If everything is Okay ,it will return True
         Return True
     End Function
 
-    Function checkAcceptance(vAcceptObjs As Object) As Boolean
+    Function checkAcceptance(vAcceptSlugLists As Object) As Boolean
         'ANY True -- return True
-        Dim vAcceptObj As Object
-        Dim objSnippet As Object
+        Dim objAccept As Object
+        Dim vAcceptSlug As String
+
         Dim vSnippetSlug As String = ""
         Dim vCode As String
         checkAcceptance = False
-        For Each vAcceptObj In vAcceptObjs
-            vSnippetSlug = vAcceptObj("snippet")("slug")
-            objSnippet = getSnippetBySlug(vSnippetSlug)
-            vCode = objSnippet("code")
+        For Each vAcceptSlug In vAcceptSlugLists
+            objAccept = objApiService.getObjectBySlug("routing-accept", vAcceptSlug)
+
+            vSnippetSlug = objAccept("snippet")("slug")
+            'objSnippet = getSnippetBySlug(vSnippetSlug)
+            vCode = objAccept("snippet")("code")
             'Execute Script-----
-            If vCode <> "" And objSnippet("status") = "A" Then
+            If vCode <> "" And objAccept("snippet")("status") = "A" Then
                 If executeScript(vCode) Then
                     checkAcceptance = True
                     Exit For
@@ -226,17 +323,15 @@ Public Class frmParameter
 
     Function checkExceptance(vExceptObjs As Object) As Boolean
         'ANY True -- return True
-        Dim vExceptObj As Object
-        Dim objSnippet As Object
-        Dim vSnippetSlug As String = ""
+        Dim objReject As Object
+        Dim vRejectSlug As String
         Dim vCode As String
         checkExceptance = False
-        For Each vExceptObj In vExceptObjs
-            vSnippetSlug = vExceptObj("snippet")("slug")
-            objSnippet = getSnippetBySlug(vSnippetSlug)
-            vCode = objSnippet("code")
+        For Each vRejectSlug In vExceptObjs
+            objReject = objApiService.getObjectBySlug("routing-reject", vRejectSlug)
+            vCode = objReject("snippet")("code")
             'Execute Script-----
-            If vCode <> "" And objSnippet("status") = "A" Then
+            If vCode <> "" And objReject("snippet")("status") = "A" Then
                 If executeScript(vCode) Then
                     checkExceptance = True
                     Exit For
@@ -264,30 +359,48 @@ Public Class frmParameter
         Return vReturn
     End Function
 
-    Function getSerialNumberRouteObject(vSn As String, vWorkOrder As Object, vRoute As Object, objSn As Object) As Object
-        'Return Route of Serial number
-        If Not IsNothing(vRoute) Then
-            Return vRoute
+    Function getSerialNumberRouteObject(vSn As String, vSnUrl As String) As Object
+        Dim objSn As Object = Nothing
+        Dim objRouting As Object = Nothing
+        Dim objWorkOrder As Object = Nothing
+
+        'Get Serial number details for specific SN (by Url)
+        objSn = objApiService.getObjectByUrl(vSnUrl)
+
+        'If there is routing defined ,Get Routing for Serial number
+        If objSn("routing") <> "" Then
+            objRouting = objApiService.getObjectBySlug("routing", objSn("routing"))
+            Return objRouting
         End If
 
-        'Check WorkOrder Routing
-        If Not IsNothing(vWorkOrder("routing")) Then
-            Return vWorkOrder("routing")
+        'Get WorkOrder's Routing
+        objWorkOrder = objApiService.getObjectBySlug("workorder", objSn("workorder"))
+        If Not IsNothing(objWorkOrder("routing")) Then
+            Return objWorkOrder("routing")
         End If
 
-        'Check Product Routing
-        If Not IsNothing(vWorkOrder("product")("routing")) Then
-            Return vWorkOrder("product")("routing")
-        End If
 
-        MsgBox("Not found Routing setting for this serial number", MsgBoxStyle.Critical, "Not found routing setting")
+        'Check Product's Routing
+        'Dim vProduct As String
+        Dim objProduct As Object
+        objProduct = objApiService.getObjectBySlug("product", objWorkOrder("product"))
+        'vtmpRoute = objProduct("routing")
+        If Not IsNothing(objProduct("routing")) Then
+            'Routing assigned
+            Return objProduct("routing")
+        End If
+        MsgBox("Not found Routing setting for this serial number",
+               MsgBoxStyle.Critical, "Not found routing setting")
         Return Nothing
+Exit_Function:
+        'Return Routing Detail
+        'Return Nothing
     End Function
 
 
     Sub CreateObject(vRoutingDetailSlug As String)
-        Dim objParams As Object
-        objParams = getParameterBySlug(vRoutingDetailSlug)
+        Dim objRoutingDetail As Object
+        objRoutingDetail = objApiService.getObjectBySlug("routing-detail", vRoutingDetailSlug)
 
         Dim tabControl As New TabControl
         'Dim tabPage As New TabPage
@@ -302,7 +415,10 @@ Public Class frmParameter
 
         Dim objParam As Object
         Dim vParamSlug As String
-        For Each objParam In objParams("parameter")
+        For Each vParamSlug In objRoutingDetail("parameter")
+            '-----get Parameter Object----
+            objParam = objApiService.getObjectBySlug("parameter", vParamSlug)
+            '-----------------------------
             Dim tabPage As New TabPage
             tabPage.Text = IIf(IsDBNull(objParam("title")), objParam("name"), objParam("title"))
             tabPage.Name = objParam("name")
@@ -311,7 +427,7 @@ Public Class frmParameter
             ' AddHandler Text.Validating, AddressOf text_Validating
             tabControl.TabPages.Add(tabPage)
             ''------Add Parameter to Page---
-            vParamSlug = objParam("slug")
+            'vParamSlug = objParam("slug")
             addParameterToPage(vParamSlug, tabPage)
             ''------------------------------
         Next
@@ -323,7 +439,8 @@ Public Class frmParameter
     Sub addParameterToPage(vParameterSlug As String, page As TabPage)
         Dim objItems As Object
         Dim objItem As Object
-        objItems = getItemBySlug(vParameterSlug)
+        'objItems = getItemBySlug(vParameterSlug)
+        objItems = objApiService.getObjectBySlug("parameter", vParameterSlug)("items")
 
         Dim vItemName As String
         Dim vTitle As String
@@ -339,7 +456,7 @@ Public Class frmParameter
         Dim ucRadio As ucParamRadio
 
         Dim ucOption As New ucParamOption
-        For Each objItem In objItems("items")
+        For Each objItem In objItems
             vItemName = objItem("name")
             vTitle = objItem("title")
             vDefaultValue = objItem("default_value")
@@ -427,124 +544,7 @@ Public Class frmParameter
 
 
 
-        '    Dim X As New ucParaText()
-        '    With X
-        '        .Name = "Param1"
-        '        .title = "Param Name"
-        '        .message = "Testing Mesasge"
-        '        .value = "ABC"
-        '        .regExpress = "[0-9]{3}"
-        '        .slug = "item2-cisco-test-product"
-        '        .url = "http://127.0.0.1:8000"
-        '        .CurrentForm = Me
-        '        .Location = New Point(50, 10)
-        '        vPosBottom = .Location.Y + .Height + 5
-        '    End With
-        '    page.Controls.Add(X)
-        '    X.Show()
-        '    X.showOpject()
 
-        '    Dim Y As New ucParaText()
-        '    With Y
-        '        .Name = "Param2"
-        '        .title = "Param Name"
-        '        .message = "Testing Mesasge"
-        '        .value = "ABC"
-        '        .regExpress = "[0-9]{3}"
-        '        .slug = "item2-cisco-test-product"
-        '        .url = "http://127.0.0.1:8000"
-        '        .CurrentForm = Me
-        '        .Location = New Point(50, vPosBottom)
-        '        vPosBottom = .Location.Y + .Height + 5
-        '        '.Dock = DockStyle.Bottom
-        '    End With
-        '    page.Controls.Add(Y)
-        '    Y.Show()
-        '    Y.showOpject()
-
-        '    Dim Z As New ucParaText()
-        '    With Z
-        '        .Name = "Param3"
-        '        .title = "Param Name"
-        '        .message = "Testing Mesasge"
-        '        .value = "ABC"
-        '        .regExpress = "[0-9]{3}"
-        '        .slug = "item2-cisco-test-product"
-        '        .url = "http://127.0.0.1:8000"
-        '        .CurrentForm = Me
-        '        .Location = New Point(50, vPosBottom)
-        '        vPosBottom = .Location.Y + .Height + 5
-        '        '.Dock = DockStyle.Bottom
-        '    End With
-        '    page.Controls.Add(Z)
-        '    Z.Show()
-        '    Z.showOpject()
-
-        '    Dim L As New ucParamList()
-        '    With L
-        '        .Name = "Param4"
-        '        .title = "Fiber Type"
-        '        .message = "Testing Mesasge"
-        '        .value = "ABC"
-        '        .regExpress = "[0-9]{3}"
-        '        .slug = "choice1-none"
-        '        .url = "http://127.0.0.1:8000"
-        '        .CurrentForm = Me
-        '        .Location = New Point(50, vPosBottom)
-        '        vPosBottom = .Location.Y + .Height + 5
-        '        .Left = X.Left
-        '        .Width = L.Width
-        '        '.Dock = DockStyle.Bottom
-        '    End With
-        '    page.Controls.Add(L)
-        '    L.Show()
-        '    L.showOpject()
-
-
-        '    Dim R As New ucParamRadio()
-        '    With R
-        '        .Name = "Param5"
-        '        .title = "Fiber Type"
-        '        .message = "Testing Mesasge"
-        '        .value = "ABC"
-        '        .regExpress = "[0-9]{3}"
-        '        .slug = "choice1-none"
-        '        .url = "http://127.0.0.1:8000"
-        '        .CurrentForm = Me
-        '        .Location = New Point(50, vPosBottom)
-        '        vPosBottom = .Location.Y + .Height + 5
-        '        .Left = X.Left
-        '        .Width = L.Width
-        '        .AutoSize = True
-        '        '.Dock = DockStyle.Bottom
-        '    End With
-        '    page.Controls.Add(R)
-        '    R.Show()
-        '    R.Refresh()
-        '    vPosBottom = R.Location.Y + R.Height + 5
-        '    R.showOpject()
-
-
-        '    Dim O As New ucParamOption()
-        '    With O
-        '        .Name = "Param6"
-        '        .title = "Fiber Type"
-        '        .message = "Testing Mesasge"
-        '        .value = "ABC"
-        '        .regExpress = "[0-9]{3}"
-        '        .slug = "choice1-none"
-        '        .url = "http://127.0.0.1:8000"
-        '        .CurrentForm = Me
-        '        .Location = New Point(50, vPosBottom)
-        '        vPosBottom = .Location.Y + .Height + 5
-        '        .Left = X.Left
-        '        .Width = L.Width
-        '        .AutoSize = True
-        '        '.Dock = DockStyle.Bottom
-        '    End With
-        '    page.Controls.Add(O)
-        '    O.Show()
-        '    O.showOpject()
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
@@ -561,12 +561,13 @@ Public Class frmParameter
     End Sub
 
     Private Sub frmParameter_Load(sender As Object, e As EventArgs) Handles Me.Load
-        tss1.Text = vUrl
 
+        'Root_url from Module mdlWMP
+        objApiService.Url = Root_url
+
+        tss1.Text = objApiService.Url
         'Get authorized operation
         getOperation(user_id)
-
-
         txtSn.Select()
         showObjectName()
     End Sub
@@ -579,9 +580,9 @@ Public Class frmParameter
         'if exist -->get only authorize operation
 
         If vUserId <> "" Then
-            operations = getJsonObject(vUrl + "/api/users/" & vUserId & "/")("operations")
+            operations = objApiService.getJsonObject(vUrl + "/api/users/" & vUserId & "/")("operations")
         Else
-            operations = getJsonObject(vUrl + "/api/operation/")
+            operations = objApiService.getJsonObject(vUrl + "/api/operation/")
         End If
 
 
@@ -639,7 +640,7 @@ Public Class frmParameter
 
     Function checkNextCondition(vDefaultNextOpr As String) As Boolean
         Dim objRoutingDetail As Object
-        objRoutingDetail = getRoutingDetail(vCurrentRoutingDetailSlug)
+        objRoutingDetail = objApiService.getRoutingDetail(vCurrentRoutingDetailSlug, "")
 
         Dim vNextoprObjs As Object
         vNextoprObjs = objRoutingDetail("next_code")
@@ -653,7 +654,7 @@ Public Class frmParameter
         checkNextCondition = False
         For Each vNextoprObj In vNextoprObjs
             vSnippetSlug = vNextoprObj("slug")
-            objSnippet = getSnippetBySlug(vSnippetSlug)
+            objSnippet = objApiService.getObjectBySlug("snippet", vSnippetSlug)
             vTitle = vNextoprObj("title")
             vNextOpr = vNextoprObj("operation")
             vCode = objSnippet("code")

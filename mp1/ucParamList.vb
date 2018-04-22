@@ -3,12 +3,16 @@ Imports System.Text.RegularExpressions
 Imports System.Net
 Imports System.Web.Script.Serialization
 Imports System.Dynamic
+Imports System.Text
+Imports System.IO
 
 <Runtime.InteropServices.ComVisible(True)>
 Public Class ucParamList
     'Start Property
     Private vTitleValue As String
     Private vCode As String
+
+    Dim objApiService As New clsAPIService
 
     Public Property title() As String
         Get
@@ -79,7 +83,52 @@ Public Class ucParamList
         End Set
     End Property
 
+
+    'Function getJsonObject(ByVal address As String) As Object
+    '    'Support request with Token
+    '    Dim request As WebRequest = WebRequest.Create(address)
+    '    request.Method = "GET"
+    '    Dim byteArray As Byte() = Encoding.UTF8.GetBytes("")
+    '    request.PreAuthenticate = True
+    '    request.Headers.Add("Authorization", "Bearer " + access_token)
+
+
+    '    Dim myHttpWebResponse = CType(request.GetResponse(), HttpWebResponse)
+    '    Dim myWebSource As New StreamReader(myHttpWebResponse.GetResponseStream())
+    '    Dim myPageSource As String = myWebSource.ReadToEnd()
+
+    '    Dim jss = New JavaScriptSerializer()
+    '    Dim data As Object = jss.Deserialize(Of Object)(myPageSource)
+    '    Return data
+
+
+    'End Function
+
+    'Private Function getSerialNumber(vSerialNumber As String) As Object
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl + "/api/serialnumber/?q=" + vSerialNumber)
+    '    getSerialNumber = json
+    'End Function
+
+
+    'Private Function getObjectByUrl(vUrl As String) As Object
+    '    Dim json As Object
+    '    json = getJsonObject(vUrl)
+    '    getObjectByUrl = json
+    'End Function
+
+    'Private Function getObjectBySlug(vApp As String, vSlug As String) As Object
+    '    Dim json As Object
+    '    Dim vUrlSlug As String
+    '    vUrlSlug = vUrl + "/api/" + vApp + "/" + vSlug & "/"
+    '    json = getJsonObject(vUrlSlug)
+    '    getObjectBySlug = json
+    'End Function
+
     Private Sub ucParamList_Load(sender As Object, e As EventArgs) Handles Me.Load
+
+        objApiService.Url = vUrl
+
         Me.AutoSize = True
         Dim label As New Label
         Dim text As New TextBox
@@ -131,33 +180,6 @@ Public Class ucParamList
     End Sub
 
     'End Property
-    Public Shared Function getJsonString(ByVal address As String) As String
-
-        Dim client As WebClient = New WebClient()
-        Dim reply As String = client.DownloadString(address)
-        Return reply
-    End Function
-
-    Public Shared Function getJsonObject(ByVal address As String) As Object
-        Dim client As WebClient = New WebClient()
-        Dim json As String = client.DownloadString(address)
-        Dim jss = New JavaScriptSerializer()
-        Dim data As Object = jss.Deserialize(Of Object)(json)
-        Return data
-    End Function
-
-    Private Function getItemBySlug(vItemSlug As String) As Object
-        Dim json As Object
-        json = getJsonObject(vUrl + "/api/item/" + vItemSlug)
-        getItemBySlug = json
-    End Function
-
-    Private Function getSnippetBySlug(vSnippetSlug As String) As Object
-        Dim json As Object
-        json = getJsonObject(vUrl + "/api/snippet/" + vSnippetSlug)
-        Return json
-    End Function
-
 
     Private Function executeScript() As Boolean
         Dim vCls As New clsMPFlex
@@ -180,11 +202,11 @@ Public Class ucParamList
 
     Private Function getCode(vSlug_ As String) As String
         Dim iObject As Object
-        iObject = getItemBySlug(vSlug_)
+        iObject = objApiService.getObjectBySlug("item", vSlug_)
         If iObject("snippet") Is Nothing Then
             getCode = ""
         Else
-            getCode = getSnippetBySlug(iObject("snippet"))("code")
+            getCode = objApiService.getObjectBySlug("snippet", iObject("snippet"))("code")
         End If
 
     End Function
@@ -199,7 +221,7 @@ Public Class ucParamList
         Dim vOrdered As Integer
         Dim vStatus As String
 
-        iObject = getItemBySlug(vSlug_)
+        iObject = objApiService.getObjectBySlug("item", vSlug_)
         iListObj = iObject("lists")
         Dim comboSource As New Dictionary(Of String, String)()
         Dim vDefaultValue As String = ""

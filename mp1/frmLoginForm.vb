@@ -28,8 +28,9 @@ Public Class frmLoginForm
         user = UsernameTextBox.Text
         password = PasswordTextBox.Text
 
+        'Root_url --> from module mdlWMP
         Dim clsAuthen As clsAuthentication = New clsAuthentication(
-            "http://127.0.0.1:8000", user, password)
+            Root_url, user, password)
 
 
         vTokenResult = clsAuthen.requestToken()
