@@ -10,6 +10,7 @@ Public Class ucParamRadio
     Private vFinalHeight As Integer
     Private vTitleValue As String
     Private vCode As String
+    Dim objApiService As New clsAPIService
 
     Public Property title() As String
         Get
@@ -60,6 +61,17 @@ Public Class ucParamRadio
         End Set
     End Property
 
+    Dim vAccessToken As String
+    Public Property access_token() As String
+        Get
+            Return vAccessToken
+        End Get
+        Set(ByVal Value As String)
+            Me.vAccessToken = Value
+            objApiService.access_token = Value
+        End Set
+    End Property
+
     Private vUrl As String
     Public Property url() As String
         Get
@@ -67,6 +79,7 @@ Public Class ucParamRadio
         End Get
         Set(ByVal value As String)
             vUrl = value
+            objApiService.url = value
         End Set
     End Property
 
@@ -211,13 +224,24 @@ Public Class ucParamRadio
         Return False
     End Function
 
+    'Private Function getCode(vSlug_ As String) As String
+    '    Dim iObject As Object
+    '    iObject = getItemBySlug(vSlug_)
+    '    If iObject("snippet") Is Nothing Then
+    '        getCode = ""
+    '    Else
+    '        getCode = getSnippetBySlug(iObject("snippet"))("code")
+    '    End If
+
+    'End Function
+
     Private Function getCode(vSlug_ As String) As String
         Dim iObject As Object
-        iObject = getItemBySlug(vSlug_)
+        iObject = objApiService.getObjectBySlug("item", vSlug_)
         If iObject("snippet") Is Nothing Then
             getCode = ""
         Else
-            getCode = getSnippetBySlug(iObject("snippet"))("code")
+            getCode = objApiService.getObjectBySlug("snippet", iObject("snippet"))("code")
         End If
 
     End Function

@@ -10,6 +10,7 @@ Imports System.Text
 Public Class frmParameter
 
     Dim objApiService As New clsAPIService
+    Dim objSerialNumber As clsSerialNumber
 
     'Using Function()
     Public Shared Function getJsonString(ByVal address As String) As String
@@ -137,164 +138,202 @@ Public Class frmParameter
 
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnStart.Click
-        If Not checkSerialNumber(txtSn.Text) Then
-            txtSn.Select(0, txtSn.Text.Length)
-            txtSn.Select()
-        Else
-            CreateObject(vCurrentRoutingDetailSlug)
-            btnStart.Enabled = False
-            btnRefresh.Enabled = True
-            txtSn.Enabled = False
 
-            btnPass.Enabled = True
-            btnFail.Enabled = True
+        'Initial value of Serial number
+        objSerialNumber = New clsSerialNumber()
+        With objSerialNumber
+            'Mandatory Parameter
+            .url = vUrl
+            .access_token = access_token
+            '--------------------
+            .serialnumber = txtSn.Text
+
+            .Form = Me
+        End With
+        'End initial
+
+
+        Dim objSn As Object
+        objSn = objSerialNumber.getObject()
+
+        Dim vSelectedOpr As String = cbOperation.SelectedValue
+        If Not objSerialNumber.checkRouting(vSelectedOpr) Then
+            MsgBox(objSerialNumber.error_message)
+            Exit Sub
+
         End If
+
+        vCurrentRoutingDetailSlug = objSerialNumber.object_RoutingDetail("slug")
+
+        CreateObject(vCurrentRoutingDetailSlug)
+        btnStart.Enabled = False
+        btnRefresh.Enabled = True
+        txtSn.Enabled = False
+
+        btnPass.Enabled = True
+        btnFail.Enabled = True
+
+
+
+
+        'If Not checkSerialNumber(txtSn.Text) Then
+        '    txtSn.Select(0, txtSn.Text.Length)
+        '    txtSn.Select()
+        'Else
+        '    CreateObject(vCurrentRoutingDetailSlug)
+        '    btnStart.Enabled = False
+        '    btnRefresh.Enabled = True
+        '    txtSn.Enabled = False
+
+        '    btnPass.Enabled = True
+        '    btnFail.Enabled = True
+        'End If
 
     End Sub
 
-    Function checkSerialNumber(vSn As String) As Boolean
-        Dim objSns As Object
-        objSns = getSerialNumber(vSn)
+    'Function checkSerialNumber(vSn As String) As Boolean
+    '    Dim objSns As Object
+    '    objSns = getSerialNumber(vSn)
 
-        'Return multiple Record
-        'Current workOrder is WIP=True
-        If objSns.length() = 0 Then
-            MsgBox("Serial number " & vSn & " doesn't exits in system",
-            MsgBoxStyle.Critical, "Not found Serial number")
-            Exit Function
-        End If
+    '    'Return multiple Record
+    '    'Current workOrder is WIP=True
+    '    If objSns.length() = 0 Then
+    '        MsgBox("Serial number " & vSn & " doesn't exits in system",
+    '        MsgBoxStyle.Critical, "Not found Serial number")
+    '        Exit Function
+    '    End If
 
-        Dim vSnSlug As String = ""
-        Dim vSnUrl As String = ""
-        Dim vWip As Boolean = False
-        Dim vSerialNumber As String = ""
+    '    Dim vSnSlug As String = ""
+    '    Dim vSnUrl As String = ""
+    '    Dim vWip As Boolean = False
+    '    Dim vSerialNumber As String = ""
 
-        'Dim objWorkOrder As Object = Nothing
-        Dim vWorkOrder As String = ""
+    '    'Dim objWorkOrder As Object = Nothing
+    '    Dim vWorkOrder As String = ""
 
-        Dim objRoute As Object = Nothing
-        Dim vRoute As String = ""
+    '    Dim objRoute As Object = Nothing
+    '    Dim vRoute As String = ""
 
-        Dim objSn As Object = Nothing
-        For Each objSn In objSns
-            vSerialNumber = objSn("number")
-            'objWorkOrder = objSn("workorder")
-            vSnSlug = objSn("slug")
-            vWip = objSn("wip")
-            'objRoute = objSn("routing")
-            'Looking for Record that WIP == True
-            If vWip Then
-                'vWorkOrder = objWorkOrder("name")
-                vSnUrl = objSn("url")
-                Exit For
-            End If
-        Next
+    '    Dim objSn As Object = Nothing
+    '    For Each objSn In objSns
+    '        vSerialNumber = objSn("number")
+    '        'objWorkOrder = objSn("workorder")
+    '        vSnSlug = objSn("slug")
+    '        vWip = objSn("wip")
+    '        'objRoute = objSn("routing")
+    '        'Looking for Record that WIP == True
+    '        If vWip Then
+    '            'vWorkOrder = objWorkOrder("name")
+    '            vSnUrl = objSn("url")
+    '            Exit For
+    '        End If
+    '    Next
 
-        If Not vWip Then
-            MsgBox("Serial number " & vSn & " is not in WIP",
-            MsgBoxStyle.Critical, "Not in WIP")
-            Exit Function
-        End If
+    '    If Not vWip Then
+    '        MsgBox("Serial number " & vSn & " is not in WIP",
+    '        MsgBoxStyle.Critical, "Not in WIP")
+    '        Exit Function
+    '    End If
 
-        'Get Serial number details for particular SN
-        objSn = objApiService.getObjectByUrl(vSnUrl)
+    '    'Get Serial number details for particular SN
+    '    objSn = objApiService.getObjectByUrl(vSnUrl)
 
-        'Get Routing for Serial number
-        Dim objRouting As Object = Nothing
-        objRouting = getSerialNumberRouteObject(vSn, vSnUrl)
-        If IsNothing(objRouting) Then
-            Exit Function
-        End If
+    '    'Get Routing for Serial number
+    '    Dim objRouting As Object = Nothing
+    '    objRouting = getSerialNumberRouteObject(vSn, vSnUrl)
+    '    If IsNothing(objRouting) Then
+    '        Exit Function
+    '    End If
 
-        'Start Check Routing process
-        Dim vCurrentOpr As String
-        Dim vSelectedOpr As String
-        '1)Check if SN.curr == Selected.operation
-        vCurrentOpr = objSn("current_operation")
-        vSelectedOpr = cbOperation.SelectedValue
-
-
-        'Get Routing Details (Route + Operation)
-        Dim objRouteDetail As Object
-
-        objRouteDetail = objApiService.getRoutingDetail(objRouting("name"), vSelectedOpr)
-        If objRouteDetail.length() = 0 Then
-            MsgBox("Operation :" & cbOperation.SelectedValue & " is not exist in routing :" & vRoute("name"),
-                   MsgBoxStyle.Critical, "Operation not exist.")
-            Exit Function
-        Else
-            'Final Route Detail Slug
-            vCurrentRoutingDetailSlug = objRouteDetail(0)("slug")
-            vCurrentRoutingDetailUrl = objRouteDetail(0)("url")
-        End If
-
-        'Get Routing Detail
-        objRouteDetail = objApiService.getObjectByUrl(vCurrentRoutingDetailUrl)
-
-        If vCurrentOpr = vSelectedOpr Then
-            'In case Sn.curr.Operation = Selected.Operation  -- check only Reject Routing
-            If IsNothing(objRouteDetail("reject_code")) Then
-                'Operation Matched and No Reject condition.
-                Return True
-            Else
-                'Check Reject Code
-                If checkExceptance(objRouteDetail("reject_code")) Then
-                    'exit return False
-                    MsgBox("Not allow to operate on this operation",
-                                MsgBoxStyle.Critical, "Exceptance check")
-                    Exit Function
-                End If
-            End If
-        Else
-            'In case Sn.curr.Operation <> Selected.Operation  -- check only Accept Routing
-            If IsNothing(objRouteDetail("accept_code")) Then
-                'Operation Matched and No Reject condition.
-                Return False
-            Else
-                'Check Accept Code
-                If Not checkAcceptance(objRouteDetail("accept_code")) Then
-                    'exit return False
-                    MsgBox("Either Wrong operation or No acceptace condition accepted",
-                            MsgBoxStyle.Critical, "Not accept to perform")
-                    Exit Function
-                End If
-            End If
+    '    'Start Check Routing process
+    '    Dim vCurrentOpr As String
+    '    Dim vSelectedOpr As String
+    '    '1)Check if SN.curr == Selected.operation
+    '    vCurrentOpr = objSn("current_operation")
+    '    vSelectedOpr = cbOperation.SelectedValue
 
 
-        End If
+    '    'Get Routing Details (Route + Operation)
+    '    Dim objRouteDetail As Object
+
+    '    objRouteDetail = objApiService.getRoutingDetail(objRouting("name"), vSelectedOpr)
+    '    If objRouteDetail.length() = 0 Then
+    '        MsgBox("Operation :" & cbOperation.SelectedValue & " is not exist in routing :" & vRoute("name"),
+    '               MsgBoxStyle.Critical, "Operation not exist.")
+    '        Exit Function
+    '    Else
+    '        'Final Route Detail Slug
+    '        vCurrentRoutingDetailSlug = objRouteDetail(0)("slug")
+    '        vCurrentRoutingDetailUrl = objRouteDetail(0)("url")
+    '    End If
+
+    '    'Get Routing Detail
+    '    objRouteDetail = objApiService.getObjectByUrl(vCurrentRoutingDetailUrl)
+
+    '    If vCurrentOpr = vSelectedOpr Then
+    '        'In case Sn.curr.Operation = Selected.Operation  -- check only Reject Routing
+    '        If IsNothing(objRouteDetail("reject_code")) Then
+    '            'Operation Matched and No Reject condition.
+    '            Return True
+    '        Else
+    '            'Check Reject Code
+    '            If checkExceptance(objRouteDetail("reject_code")) Then
+    '                'exit return False
+    '                MsgBox("Not allow to operate on this operation",
+    '                            MsgBoxStyle.Critical, "Exceptance check")
+    '                Exit Function
+    '            End If
+    '        End If
+    '    Else
+    '        'In case Sn.curr.Operation <> Selected.Operation  -- check only Accept Routing
+    '        If IsNothing(objRouteDetail("accept_code")) Then
+    '            'Operation Matched and No Reject condition.
+    '            Return False
+    '        Else
+    '            'Check Accept Code
+    '            If Not checkAcceptance(objRouteDetail("accept_code")) Then
+    '                'exit return False
+    '                MsgBox("Either Wrong operation or No acceptace condition accepted",
+    '                        MsgBoxStyle.Critical, "Not accept to perform")
+    '                Exit Function
+    '            End If
+    '        End If
+
+
+    '    End If
 
 
 
 
-        ''Check Current Operation-
-        'Dim vCurrentOpr As String
-        'Dim vObjRoutingDetail As Object
-        'vObjRoutingDetail = getRoutingDetail(vCurrentRoutingDetailSlug)
+    '    ''Check Current Operation-
+    '    'Dim vCurrentOpr As String
+    '    'Dim vObjRoutingDetail As Object
+    '    'vObjRoutingDetail = getRoutingDetail(vCurrentRoutingDetailSlug)
 
-        'If Not IsNothing(objSn("current_operation")) Then
-        '    vCurrentOpr = objSn("current_operation")("name")
-        'Else
-        '    vCurrentOpr = objSn("current_operation")
-        'End If
+    '    'If Not IsNothing(objSn("current_operation")) Then
+    '    '    vCurrentOpr = objSn("current_operation")("name")
+    '    'Else
+    '    '    vCurrentOpr = objSn("current_operation")
+    '    'End If
 
-        ''get Next pass and Next Fail.
-        'If Not IsNothing(vObjRoutingDetail("next_pass")) Then
-        '    vDefaultNextPassOperation = vObjRoutingDetail("next_pass")("name")
-        'End If
-        'If Not IsNothing(vObjRoutingDetail("next_fail")) Then
-        '    vDefaultNextFailOperation = vObjRoutingDetail("next_fail")("name")
-        'End If
-        ''-----------------------------
-
-
+    '    ''get Next pass and Next Fail.
+    '    'If Not IsNothing(vObjRoutingDetail("next_pass")) Then
+    '    '    vDefaultNextPassOperation = vObjRoutingDetail("next_pass")("name")
+    '    'End If
+    '    'If Not IsNothing(vObjRoutingDetail("next_fail")) Then
+    '    '    vDefaultNextFailOperation = vObjRoutingDetail("next_fail")("name")
+    '    'End If
+    '    ''-----------------------------
 
 
 
 
 
-        'If everything is Okay ,it will return True
-        Return True
-    End Function
+
+
+    '    'If everything is Okay ,it will return True
+    '    Return True
+    'End Function
 
     Function checkAcceptance(vAcceptSlugLists As Object) As Boolean
         'ANY True -- return True
@@ -474,6 +513,7 @@ Exit_Function:
                                 .regExpress = vRegExp,
                                 .slug = vItemSlug,
                                 .url = vUrl,
+                                .access_token = access_token,
                                 .CurrentForm = Me,
                                 .Location = New Point(50, vPosBottom),
                                 .required = vRequired
@@ -491,6 +531,7 @@ Exit_Function:
                         .regExpress = vRegExp,
                         .slug = vItemSlug,
                         .url = vUrl,
+                        .access_token = access_token,
                         .CurrentForm = Me,
                         .Location = New Point(50, vPosBottom),
                         .required = vRequired
@@ -564,6 +605,7 @@ Exit_Function:
 
         'Root_url from Module mdlWMP
         objApiService.Url = Root_url
+        objApiService.access_token = access_token
 
         tss1.Text = objApiService.Url
         'Get authorized operation

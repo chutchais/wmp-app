@@ -5,6 +5,7 @@ Imports System.Web.Script.Serialization
 
 Public Class clsAPIService
     Private vUrl As String
+    Private vAccessToken As String
 
     Public Property Url() As String
         Get
@@ -15,13 +16,22 @@ Public Class clsAPIService
         End Set
     End Property
 
+    Public Property access_token() As String
+        Get
+            Return vAccessToken
+        End Get
+        Set(ByVal Value As String)
+            Me.vAccessToken = Value
+        End Set
+    End Property
+
     Public Function getJsonObject(ByVal address As String) As Object
         'Support request with Token
         Dim request As WebRequest = WebRequest.Create(address)
         request.Method = "GET"
         Dim byteArray As Byte() = Encoding.UTF8.GetBytes("")
         request.PreAuthenticate = True
-        request.Headers.Add("Authorization", "Bearer " + access_token)
+        request.Headers.Add("Authorization", "Bearer " + vAccessToken)
 
 
         Dim myHttpWebResponse = CType(request.GetResponse(), HttpWebResponse)

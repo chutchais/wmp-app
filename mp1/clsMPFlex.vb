@@ -48,6 +48,18 @@ Public Class clsMPFlex
         End Set
     End Property
 
+    Dim vAccessToken As String
+    Public Property access_token As String
+        Get
+            ' Gets the property value.
+            Return vAccessToken
+        End Get
+        Set(ByVal vAccessToken_ As String)
+            ' Sets the property value.
+            vAccessToken = vAccessToken_
+        End Set
+    End Property
+
     Public Property success As Boolean
         Get
             ' Gets the property value.

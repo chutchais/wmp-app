@@ -7,6 +7,8 @@ Imports System.Dynamic
 <Runtime.InteropServices.ComVisible(True)>
 Public Class ucParaText
     'Start Property
+    Dim objApiService As New clsAPIService
+
     Private vTitleValue As String
     Private vCode As String
 
@@ -66,6 +68,19 @@ Public Class ucParaText
         End Get
         Set(ByVal value As String)
             vUrl = value
+            objApiService.Url = value
+        End Set
+
+    End Property
+
+    Dim vAccessToken As String
+    Public Property access_token() As String
+        Get
+            Return vAccessToken
+        End Get
+        Set(ByVal Value As String)
+            Me.vAccessToken = Value
+            objApiService.access_token = Value
         End Set
     End Property
 
@@ -199,28 +214,41 @@ Public Class ucParaText
         Dim vCls As New clsMPFlex
         'initial
         vCls.Form = vCurrentFormIn
-        vCls.Url = "http://127.0.0.1:8000"
+        vCls.Url = vUrl
+        vCls.access_token = vAccessToken
+
+
+        objApiService.Url = vUrl
+        objApiService.access_token = vAccessToken
 
         Dim vReturn As String
         vCode = getCode(vSlug)
-        vReturn = vCls.executeScritp(vCode)
-        'MsgBox(vCls.Url)
-        'lblSuccess.Text = vCls.success
-        'lblMsg.Text = vCls.message
-        If Not vCls.success Then
-            MsgBox(vCls.error_message)
+        If vCode <> "" Then
+            vReturn = vCls.executeScritp(vCode)
+
+            If Not vCls.success Then
+                MsgBox(vCls.error_message)
+            End If
+            Return vReturn
         End If
 
-        Return False
+        Return True
+
+
+
     End Function
 
     Private Function getCode(vSlug_ As String) As String
+        'Dim iObject As Object
+        'iObject = getItemBySlug(vSlug_)
         Dim iObject As Object
-        iObject = getItemBySlug(vSlug_)
+        iObject = objApiService.getObjectBySlug("item", vSlug_)
+
         If iObject("snippet") Is Nothing Then
             getCode = ""
         Else
-            getCode = getSnippetBySlug(iObject("snippet"))("code")
+            ' getCode = getSnippetBySlug(iObject("snippet"))("code")
+            getCode = objApiService.getObjectBySlug("snippet", iObject("snippet"))("code")
         End If
 
     End Function

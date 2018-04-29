@@ -10,6 +10,8 @@ Public Class ucParamOption
     Private vTitleValue As String
     Private vCode As String
 
+    Dim objApiService As New clsAPIService
+
     Public Property title() As String
         Get
             Return vTitleValue
@@ -66,6 +68,18 @@ Public Class ucParamOption
         End Get
         Set(ByVal value As String)
             vUrl = value
+            objApiService.url = value
+        End Set
+    End Property
+
+    Dim vAccessToken As String
+    Public Property access_token() As String
+        Get
+            Return vAccessToken
+        End Get
+        Set(ByVal Value As String)
+            Me.vAccessToken = Value
+            objApiService.access_token = Value
         End Set
     End Property
 
@@ -175,7 +189,8 @@ Public Class ucParamOption
         Dim vCls As New clsMPFlex
         'initial
         vCls.Form = vCurrentFormIn
-        vCls.Url = "http://127.0.0.1:8000"
+        vCls.Url = vUrl
+        vCls.access_token = vAccessToken
 
         Dim vReturn As String
         vCode = getCode(vSlug)
@@ -190,14 +205,25 @@ Public Class ucParamOption
 
     Private Function getCode(vSlug_ As String) As String
         Dim iObject As Object
-        iObject = getItemBySlug(vSlug_)
+        iObject = objApiService.getObjectBySlug("item", vSlug_)
         If iObject("snippet") Is Nothing Then
             getCode = ""
         Else
-            getCode = getSnippetBySlug(iObject("snippet"))("code")
+            getCode = objApiService.getObjectBySlug("snippet", iObject("snippet"))("code")
         End If
 
     End Function
+
+    'Private Function getCode(vSlug_ As String) As String
+    '    Dim iObject As Object
+    '    iObject = getItemBySlug(vSlug_)
+    '    If iObject("snippet") Is Nothing Then
+    '        getCode = ""
+    '    Else
+    '        getCode = getSnippetBySlug(iObject("snippet"))("code")
+    '    End If
+
+    'End Function
 
     Private Function getItem(vSlug_ As String, ucRadio As RadioButton) As String
         Dim iObject As Object

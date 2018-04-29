@@ -73,6 +73,17 @@ Public Class ucParamList
         End Set
     End Property
 
+    Dim vAccessToken As String
+    Public Property access_token() As String
+        Get
+            Return vAccessToken
+        End Get
+        Set(ByVal Value As String)
+            Me.vAccessToken = Value
+            objApiService.access_token = Value
+        End Set
+    End Property
+
     Private vRequired As Boolean
     Public Property required() As Boolean
         Get
@@ -185,7 +196,8 @@ Public Class ucParamList
         Dim vCls As New clsMPFlex
         'initial
         vCls.Form = vCurrentFormIn
-        vCls.Url = "http://127.0.0.1:8000"
+        vCls.Url = vUrl
+        vCls.access_token = vAccessToken
 
         Dim vReturn As String
         vCode = getCode(vSlug)

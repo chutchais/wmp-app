@@ -92,6 +92,7 @@
     <Compile Include="clsAPIService.vb" />
     <Compile Include="clsAuthentication.vb" />
     <Compile Include="clsMPFlex.vb" />
+    <Compile Include="clsSerialNumber.vb" />
     <Compile Include="Dictionary.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
